@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- 
+<!--
 # YafaRay v4 Test01
 # Tests for texture formats, render layers, denoise, logs and image film saving.
 
@@ -10,11 +10,11 @@ To test, using the terminal (or Windows "cmd") do this:
 <path-to-yafaray-xml>/yafaray-xml -vl verbose -lvl verbose test01.xml
 -->
 
-<scene>
+<yafaray_xml format_version="4.0.0">
 
-<scene_parameters>
+<scene>
 	<type sval="yafaray"/>
-</scene_parameters>
+</scene>
 
 <layer>
 	<type sval="combined"/>
@@ -1058,4 +1058,4 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xstart ival="0"/>
 	<ystart ival="0"/>
 </render>
-</scene>
+</yafaray_xml>
