@@ -19,6 +19,7 @@
 #include "yafaray_xml_c_api.h"
 #include "command_line_parser.h"
 #include <csignal>
+#include <fstream>
 
 #ifdef WIN32
 #include <windows.h>
@@ -137,7 +138,22 @@ int main(int argc, char *argv[])
 	yafaray_paramsSetBool(yi, "logging_save_html", static_cast<yafaray_bool_t>(save_html));
 
 	yafaray_setInteractive(yi, YAFARAY_BOOL_FALSE);
-	yafaray_xml_Parse(yi, xml_file_path.c_str());
+
+//#define USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
+#ifdef USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
+	// Test using standard ParseMemory (alternative just to demonstrate memory parsing)
+	yafaray_printInfo(yi, ("Parsing file '" + xml_file_path + "' using alternate ParseMemory method").c_str());
+	const std::ifstream xml_stream(xml_file_path);
+	std::stringstream xml_stream_buffer;
+	xml_stream_buffer << xml_stream.rdbuf();
+	const std::string xml_string = xml_stream_buffer.str();
+	yafaray_xml_ParseMemory(yi, xml_string.c_str(), xml_string.size());
+#else
+	// Regular code using standard ParseFile (recommended)
+	yafaray_printInfo(yi, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
+	yafaray_xml_ParseFile(yi, xml_file_path.c_str());
+#endif
+
 	yafaray_render(yi, nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
 	yafaray_destroyInterface(yi);
 	return 0;

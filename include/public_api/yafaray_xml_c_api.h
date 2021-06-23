@@ -28,7 +28,8 @@
 extern "C" {
 #endif
 
-	YAFARAY_XML_C_API_EXPORT bool yafaray_xml_Parse(yafaray_Interface_t *yafaray_interface, const char *xml_file_path);
+	YAFARAY_XML_C_API_EXPORT bool yafaray_xml_ParseFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path);
+	YAFARAY_XML_C_API_EXPORT bool yafaray_xml_ParseMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size);
 	YAFARAY_XML_C_API_EXPORT void yafaray_xml_getVersionString(char *dest_string, unsigned int dest_string_size);
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMajor();
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMinor();

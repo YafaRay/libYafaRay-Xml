@@ -147,12 +147,24 @@ static xmlSAXHandler my_handler_global =
 	myFatalError_global
 };
 
-bool XmlParser::parseXml(yafaray_Interface_t *yafaray_interface, const char *filename) noexcept
+bool XmlParser::parseXmlFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path) noexcept
 {
 	XmlParser parser(yafaray_interface);
-	if(xmlSAXUserParseFile(&my_handler_global, &parser, filename) < 0)
+	if(!xml_file_path || xmlSAXUserParseFile(&my_handler_global, &parser, xml_file_path) < 0)
 	{
-		yafaray_printInfo(yafaray_interface, ("XMLParser: Parsing the file " + std::string(filename)).c_str());
+		yafaray_printError(yafaray_interface, ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
+		return false;
+	}
+	return true;
+}
+
+bool XmlParser::parseXmlMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size) noexcept
+{
+	const int xml_buffer_size_signed = static_cast<int>(xml_buffer_size);
+	XmlParser parser(yafaray_interface);
+	if(!xml_buffer || xml_buffer_size_signed <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size_signed) < 0)
+	{
+		yafaray_printError(yafaray_interface, "XMLParser: Error parsing a memory buffer");
 		return false;
 	}
 	return true;

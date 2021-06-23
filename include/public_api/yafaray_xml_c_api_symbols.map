@@ -2,7 +2,8 @@
 
 LIBYAFARAYXML_4.0.0 {
     global:
-        yafaray_xml_Parse;
+        yafaray_xml_ParseFile;
+        yafaray_xml_ParseMemory;
         yafaray_xml_getVersionString;
         yafaray_xml_getVersionMajor;
         yafaray_xml_getVersionMinor;

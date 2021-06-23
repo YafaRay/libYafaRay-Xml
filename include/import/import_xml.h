@@ -64,7 +64,6 @@ struct Rgba
 class XmlParser final
 {
 	public:
-		static bool parseXml(yafaray_Interface_t *yafaray_interface, const char *filename) noexcept;
 		XmlParser(yafaray_Interface_t *yafaray_interface);
 		void pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name);
 		void popState();
@@ -80,6 +79,8 @@ class XmlParser final
 		std::string getLastElementName() const { return current_->last_element_; }
 		std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
 		yafaray_Interface_t *getInterface() { return yafaray_interface_; }
+		static bool parseXmlFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path) noexcept;
+		static bool parseXmlMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size) noexcept;
 
 	private:
 		std::vector<ParserState> state_stack_;

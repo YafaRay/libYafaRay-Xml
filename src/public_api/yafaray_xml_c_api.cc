@@ -21,9 +21,14 @@
 #include "common/version_build_info.h"
 #include <cstring>
 
-bool yafaray_xml_Parse(yafaray_Interface_t *yafaray_interface, const char *xml_file_path)
+bool yafaray_xml_ParseFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path)
 {
-	return yafaray_xml::XmlParser::parseXml(yafaray_interface, xml_file_path);
+	return yafaray_xml::XmlParser::parseXmlFile(yafaray_interface, xml_file_path);
+}
+
+bool yafaray_xml_ParseMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size)
+{
+	return yafaray_xml::XmlParser::parseXmlMemory(yafaray_interface, xml_buffer, xml_buffer_size);
 }
 
 void yafaray_xml_getVersionString(char *dest_string, unsigned int dest_string_size)
