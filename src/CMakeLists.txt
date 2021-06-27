@@ -4,7 +4,7 @@ set_target_properties(libyafaray4_xml PROPERTIES CXX_STANDARD 11 CXX_STANDARD_RE
 set_target_properties(libyafaray4_xml PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
 target_include_directories(libyafaray4_xml PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include)
 target_include_directories(libyafaray4_xml INTERFACE $<INSTALL_INTERFACE:include>)
-target_link_libraries(libyafaray4_xml LibYafaRay::libyafaray4 LibXml2::LibXml2)
+target_link_libraries(libyafaray4_xml PRIVATE LibYafaRay::libyafaray4 LibXml2::LibXml2)
 
 add_subdirectory(common)
 add_subdirectory(import)
