@@ -63,12 +63,8 @@ int main(int argc, char *argv[])
 
 	CliParser parse(argc, argv, 2, 1, "You need to set at least a yafaray's valid XML file.");
 
-	const int version_string_size = 100;
-	char *version_c_string = (char *) malloc(version_string_size * sizeof(char));
-	yafaray_xml_getVersionString(version_c_string, version_string_size);
-	const std::string version_string {version_c_string};
-	free(version_c_string);
-	parse.setAppName("YafaRay XML loader v" + version_string,
+	char *version_string = yafaray_xml_getVersionString();
+	parse.setAppName("YafaRay XML loader v" + std::string(version_string),
 					 "[OPTIONS]... <input xml file>\n<input xml file> : A valid yafaray XML file\n*Note: the output file name(s) and parameters are defined in the XML file, in the <output> tags.");
 
 	parse.setOption("v", "version", true, "Displays this program's version.");
@@ -95,13 +91,13 @@ int main(int argc, char *argv[])
 	}
 	else if(parse.isFlagSet("v"))
 	{
-		yafaray_printInfo(yi, ("YafaRay XML loader v" + version_string).c_str());
+		yafaray_printInfo(yi, ("YafaRay XML loader (LibYafaRay-Xml v" + std::string(version_string) + ")").c_str());
 		return 0;
 	}
 
 	yi = yafaray_createInterface(YAFARAY_INTERFACE_FOR_RENDERING, nullptr, nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
 
-	yafaray_printInfo(yi, ("YafaRay XML loader (LibYafaRay-Xml v" + version_string + ")").c_str());
+	yafaray_printInfo(yi, ("YafaRay XML loader (LibYafaRay-Xml v" + std::string(version_string) + ")").c_str());
 
 	const bool no_date_time = parse.isFlagSet("nodt");
 	if(no_date_time) yafaray_enablePrintDateTime(yi, YAFARAY_BOOL_FALSE);
@@ -156,5 +152,6 @@ int main(int argc, char *argv[])
 
 	yafaray_render(yi, nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
 	yafaray_destroyInterface(yi);
+	yafaray_xml_deallocateCharPointer(version_string);
 	return 0;
 }

@@ -31,15 +31,24 @@ bool yafaray_xml_ParseMemory(yafaray_Interface_t *yafaray_interface, const char 
 	return yafaray_xml::XmlParser::parseXmlMemory(yafaray_interface, xml_buffer, xml_buffer_size);
 }
 
-void yafaray_xml_getVersionString(char *dest_string, unsigned int dest_string_size)
+char *createCString(const std::string &std_string)
 {
-	if(!dest_string || dest_string_size == 0) return;
-	const std::string version_string = yafaray_xml::buildinfo::getVersionString();
-	const unsigned int copy_length = std::min(dest_string_size - 1, static_cast<unsigned int>(version_string.size()));
-	strncpy(dest_string, version_string.c_str(), copy_length);
-	*(dest_string + copy_length) = 0x00; //Make sure that the destination string gets null terminated
+	const size_t string_size = std_string.size();
+	char *c_string = new char[string_size + 1];
+	std::strcpy(c_string, std_string.c_str());
+	return c_string;
+}
+
+char *yafaray_xml_getVersionString()
+{
+	return createCString(yafaray_xml::buildinfo::getVersionString());
 }
 
 int yafaray_xml_getVersionMajor() { return yafaray_xml::buildinfo::getVersionMajor(); }
 int yafaray_xml_getVersionMinor() { return yafaray_xml::buildinfo::getVersionMinor(); }
 int yafaray_xml_getVersionPatch() { return yafaray_xml::buildinfo::getVersionPatch(); }
+
+void yafaray_xml_deallocateCharPointer(char *string_pointer_to_deallocate)
+{
+	delete[] string_pointer_to_deallocate;
+}
