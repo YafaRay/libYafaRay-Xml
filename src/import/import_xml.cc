@@ -177,6 +177,7 @@ bool XmlParser::parseXmlMemory(yafaray_Interface_t *yafaray_interface, const cha
 XmlParser::XmlParser(yafaray_Interface_t *yafaray_interface):
 		yafaray_interface_(yafaray_interface)
 {
+	std::setlocale(LC_NUMERIC, "C"); //To make sure floating points in the xml file are evaluated using the dot and not a comma in some locales
 	pushState(startElDocument_global, endElDocument_global, "");
 }
 
