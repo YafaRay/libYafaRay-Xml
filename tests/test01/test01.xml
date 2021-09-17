@@ -961,7 +961,6 @@ To test, using the terminal (or Windows "cmd") do this:
 </integrator>
 
 <output name="output1_png">
-	<type sval="image_output"/>
 	<image_path sval="./test01_png.png"/>
 	<color_space sval="sRGB"/>
 	<gamma fval="1"/>
@@ -983,7 +982,6 @@ To test, using the terminal (or Windows "cmd") do this:
 </output>
 
 <output name="output2_exr">
-	<type sval="image_output"/>
 	<image_path sval="./test01_exr.exr"/>
 	<multi_layer bval="true"/>
 	<logging_save_txt bval="true"/>
@@ -991,11 +989,6 @@ To test, using the terminal (or Windows "cmd") do this:
 	<badge_title sval="YafaRay v4 Test01 (EXR output)"/>
 </output>
 
-<!-- This can be used as a printed debug output for testing. Yo do it, uncomment this block
-<output name="output3_print">
-	<type sval="debug_output"/>
-</output>
--->
 <render_view name="view_1">
 	<camera_name sval="cam_1"/>
 	<light_names sval="light_1;light_2"/>

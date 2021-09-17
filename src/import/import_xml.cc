@@ -657,7 +657,7 @@ void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 			else if(!strcmp(element, "object_parameters")) yafaray_createObject(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "volumeregion")) yafaray_createVolumeRegion(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "layer")) { yafaray_defineLayer(yafaray_interface); }
-			else if(!strcmp(element, "output")) yafaray_createOutput(yafaray_interface, element_name.c_str(), static_cast<yafaray_bool_t>(false));
+			else if(!strcmp(element, "output")) yafaray_createOutput(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "render_view")) yafaray_createRenderView(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "render")) yafaray_setupRender(yafaray_interface);
 			else yafaray_printWarning(yafaray_interface, ("XMLParser: Unexpected end-tag of scene element '" + std::string(element) + "'!").c_str());
