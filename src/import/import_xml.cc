@@ -274,7 +274,7 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 	}
 	Rgba c(0.f);
 	Vec3f v(0, 0, 0);
-	std::array<std::array<float, 4>, 4> m;
+	float matrix[4][4];
 	enum class ParameterType : int { None, Vector, Color, Matrix } type = ParameterType::None;
 	for(int n = 0; attrs[n]; ++n)
 	{
@@ -297,12 +297,12 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 			type = ParameterType::Matrix;
 			const int i = attrs[n][1] - '0';
 			const int j = attrs[n][2] - '0';
-			m[i][j] = atof(attrs[n + 1]);
+			matrix[i][j] = atof(attrs[n + 1]);
 		}
 	}
 
 	if(type == ParameterType::Vector) yafaray_paramsSetVector(yafaray_interface, param_name, v.x_, v.y_, v.z_);
-	else if(type == ParameterType::Matrix) yafaray_paramsSetMatrix(yafaray_interface, param_name, m.data()->data(), static_cast<yafaray_bool_t>(false));
+	else if(type == ParameterType::Matrix) yafaray_paramsSetMatrix(yafaray_interface, param_name, matrix, static_cast<yafaray_bool_t>(false));
 	else if(type == ParameterType::Color)
 	{
 		yafaray_paramsSetColor(yafaray_interface, param_name, c.r_, c.g_, c.b_, c.a_);
