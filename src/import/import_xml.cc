@@ -302,7 +302,7 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 	}
 
 	if(type == ParameterType::Vector) yafaray_paramsSetVector(yafaray_interface, param_name, v.x_, v.y_, v.z_);
-	else if(type == ParameterType::Matrix) yafaray_paramsSetMatrix(yafaray_interface, param_name, matrix, static_cast<yafaray_bool_t>(false));
+	else if(type == ParameterType::Matrix) yafaray_paramsSetMatrixArray(yafaray_interface, param_name, matrix, static_cast<yafaray_bool_t>(false));
 	else if(type == ParameterType::Color)
 	{
 		yafaray_paramsSetColor(yafaray_interface, param_name, c.r_, c.g_, c.b_, c.a_);
@@ -599,7 +599,7 @@ void startElInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p
 				m[i][j] = atof(attrs[n + 1]);
 			}
 		}
-		yafaray_addInstance(yafaray_interface, parser.stateElementName().c_str(), m);
+		yafaray_addInstanceArray(yafaray_interface, parser.stateElementName().c_str(), m);
 	}
 }
 
