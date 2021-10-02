@@ -133,8 +133,6 @@ int main(int argc, char *argv[])
 	yafaray_paramsSetBool(yi, "logging_save_txt", static_cast<yafaray_bool_t>(save_txt));
 	yafaray_paramsSetBool(yi, "logging_save_html", static_cast<yafaray_bool_t>(save_html));
 
-	yafaray_setInteractive(yi, YAFARAY_BOOL_FALSE);
-
 //#define USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
 #ifdef USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
 	// Test using standard ParseMemory (alternative just to demonstrate memory parsing)
