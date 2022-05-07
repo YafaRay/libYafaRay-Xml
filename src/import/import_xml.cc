@@ -511,8 +511,8 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 	else if(!strcmp(element, "f"))
 	{
 		std::vector<int> vertices_indices, uv_indices;
-		vertices_indices.reserve(3);
-		uv_indices.reserve(3);
+		vertices_indices.reserve(4);
+		uv_indices.reserve(4);
 		for(; attrs && attrs[0]; attrs += 2)
 		{
 			const std::string attribute = attrs[0];
@@ -529,8 +529,16 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 				if(attribute.substr(0, 3) == "uv_") uv_indices.push_back(atoi(attrs[1]));
 			}
 		}
-		if(uv_indices.empty()) yafaray_addTriangle(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2]); //TODO for Quads
-		else yafaray_addTriangleWithUv(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], uv_indices[0], uv_indices[1], uv_indices[2]); //TODO for Quads
+		if(vertices_indices.size() == 3)
+		{
+			if(uv_indices.empty()) yafaray_addTriangle(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2]);
+			else yafaray_addTriangleWithUv(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], uv_indices[0], uv_indices[1], uv_indices[2]);
+		}
+		else if(vertices_indices.size() == 4)
+		{
+			if(uv_indices.empty()) yafaray_addQuad(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3]);
+			else yafaray_addQuadWithUv(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3], uv_indices[0], uv_indices[1], uv_indices[2], uv_indices[3]);
+		}
 	}
 	else if(!strcmp(element, "uv"))
 	{
