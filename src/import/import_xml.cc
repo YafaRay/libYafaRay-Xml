@@ -205,7 +205,7 @@ void XmlParser::popState()
 
 inline bool str2Bool_global(const char *s) { return strcmp(s, "true") == 0; }
 
-static void parsePoint_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &p, Vec3f &op, bool &has_orco)
+static void parsePoint_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &p, Vec3f &op, size_t &time_step, bool &has_orco)
 {
 	for(; attrs && attrs[0]; attrs += 2)
 	{
@@ -236,12 +236,13 @@ static void parsePoint_global(yafaray_Interface_t *yafaray_interface, const char
 			case 'x' : p.x_ = atof(attrs[1]); break;
 			case 'y' : p.y_ = atof(attrs[1]); break;
 			case 'z' : p.z_ = atof(attrs[1]); break;
+			case 't' : time_step = atof(attrs[1]); break;
 			default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
 		}
 	}
 }
 
-static bool parseNormal_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &n)
+static bool parseNormal_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &n, size_t time_step)
 {
 	int compo_read = 0;
 	for(; attrs && attrs[0]; attrs += 2)
@@ -256,6 +257,7 @@ static bool parseNormal_global(yafaray_Interface_t *yafaray_interface, const cha
 			case 'x' : n.x_ = atof(attrs[1]); compo_read++; break;
 			case 'y' : n.y_ = atof(attrs[1]); compo_read++; break;
 			case 'z' : n.z_ = atof(attrs[1]); compo_read++; break;
+			case 't' : time_step = atof(attrs[1]); compo_read++; break;
 			default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
 		}
 	}
@@ -497,16 +499,18 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 	{
 		Vec3f p{0.f, 0.f, 0.f};
 		Vec3f op{0.f, 0.f, 0.f};
+		size_t time_step = 0;
 		bool has_orco = false;
-		parsePoint_global(yafaray_interface, attrs, p, op, has_orco);
-		if(has_orco) yafaray_addVertexWithOrco(yafaray_interface, p.x_, p.y_, p.z_, op.x_, op.y_, op.z_);
-		else yafaray_addVertex(yafaray_interface, p.x_, p.y_, p.z_);
+		parsePoint_global(yafaray_interface, attrs, p, op, time_step, has_orco);
+		if(has_orco) yafaray_addVertexWithOrco(yafaray_interface, p.x_, p.y_, p.z_, op.x_, op.y_, op.z_, time_step);
+		else yafaray_addVertex(yafaray_interface, p.x_, p.y_, p.z_, time_step);
 	}
 	else if(!strcmp(element, "n"))
 	{
 		Vec3f n(0.0, 0.0, 0.0);
-		if(!parseNormal_global(yafaray_interface, attrs, n)) return;
-		yafaray_addNormal(yafaray_interface, n.x_, n.y_, n.z_);
+		size_t time_step = 0;
+		if(!parseNormal_global(yafaray_interface, attrs, n, time_step)) return;
+		yafaray_addNormal(yafaray_interface, n.x_, n.y_, n.z_, time_step);
 	}
 	else if(!strcmp(element, "f"))
 	{
