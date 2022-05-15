@@ -23,7 +23,6 @@
 #include <libxml/parser.h>
 #include <sstream>
 #include <cstring>
-#include <array>
 
 BEGIN_YAFARAY_XML
 
@@ -502,15 +501,15 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 		size_t time_step = 0;
 		bool has_orco = false;
 		parsePoint_global(yafaray_interface, attrs, p, op, time_step, has_orco);
-		if(has_orco) yafaray_addVertexWithOrco(yafaray_interface, p.x_, p.y_, p.z_, op.x_, op.y_, op.z_, time_step);
-		else yafaray_addVertex(yafaray_interface, p.x_, p.y_, p.z_, time_step);
+		if(has_orco) yafaray_addVertexWithOrcoTimeStep(yafaray_interface, p.x_, p.y_, p.z_, op.x_, op.y_, op.z_, time_step);
+		else yafaray_addVertexTimeStep(yafaray_interface, p.x_, p.y_, p.z_, time_step);
 	}
 	else if(!strcmp(element, "n"))
 	{
 		Vec3f n(0.0, 0.0, 0.0);
 		size_t time_step = 0;
 		if(!parseNormal_global(yafaray_interface, attrs, n, time_step)) return;
-		yafaray_addNormal(yafaray_interface, n.x_, n.y_, n.z_, time_step);
+		yafaray_addNormalTimeStep(yafaray_interface, n.x_, n.y_, n.z_, time_step);
 	}
 	else if(!strcmp(element, "f"))
 	{
