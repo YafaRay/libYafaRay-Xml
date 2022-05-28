@@ -79,6 +79,11 @@ class XmlParser final
 		std::string getLastElementName() const { return current_->last_element_; }
 		std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
 		yafaray_Interface_t *getInterface() { return yafaray_interface_; }
+		size_t getInstanceIdCurrent() const { return instance_id_current_; }
+		void setInstanceIdCurrent(size_t instance_id_current) { instance_id_current_ = instance_id_current; }
+		float getTimeCurrent() const { return time_current_; }
+		void setTimeCurrent(float time_current) { time_current_ = time_current; }
+		float *matrixCurrent() { return reinterpret_cast<float *>(matrix_current_); }
 		static bool parseXmlFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path) noexcept;
 		static bool parseXmlMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size) noexcept;
 
@@ -87,6 +92,9 @@ class XmlParser final
 		ParserState *current_ = nullptr;
 		int level_ = 0;
 		yafaray_Interface_t *yafaray_interface_ = nullptr;
+		float matrix_current_[4][4];
+		size_t instance_id_current_ = static_cast<size_t>(-1);
+		float time_current_ = 0.f;
 };
 
 // state callbacks:
@@ -96,12 +104,18 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 void endElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
 void endElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 void startElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
 void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element);
 void startElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
 void endElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
+void endElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 
 END_YAFARAY_XML
 
