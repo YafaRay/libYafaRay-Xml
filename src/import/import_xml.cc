@@ -468,6 +468,7 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 	else if(!strcmp(element, "createInstance"))
 	{
 		parser.setInstanceIdCurrent(yafaray_createInstance(yafaray_interface));
+		parser.pushState(nullptr, endElCreateInstance_global, "");
 	}
 	else if(!strcmp(element, "addInstanceObject"))
 	{
@@ -483,44 +484,46 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 				base_object_name = attrs[n + 1];
 			}
 		}
-		parser.pushState(startElAddInstanceObject_global, endElAddInstanceObject_global, base_object_name);
+		yafaray_addInstanceObject(yafaray_interface, parser.getInstanceIdCurrent(), base_object_name.c_str());
+		parser.pushState(nullptr, endElAddInstanceObject_global, "");
 	}
 	else if(!strcmp(element, "addInstanceOfInstance"))
 	{
-		std::string base_instance_id;
+		unsigned int instance_id = -1;
+		unsigned int base_instance_id = -1;
 		for(int n = 0; attrs[n]; n++)
 		{
 			if(!strcmp(attrs[n], "instance_id"))
 			{
-				parser.setInstanceIdCurrent(atoi(attrs[n + 1]));
+				base_instance_id = atoi(attrs[n + 1]);
 			}
 			else if(!strcmp(attrs[n], "base_instance_id"))
 			{
-				base_instance_id = attrs[n + 1];
+				base_instance_id = atoi(attrs[n + 1]);
 			}
 		}
-		parser.pushState(startElAddInstanceOfInstance_global, endElAddInstanceOfInstance_global, base_instance_id);
+		yafaray_addInstanceOfInstance(yafaray_interface, instance_id, base_instance_id);
+		parser.pushState(nullptr, endElAddInstanceOfInstance_global, "");
 	}
 	else if(!strcmp(element, "addInstanceMatrix"))
 	{
-		std::string instance_id_str;
 		for(int n = 0; attrs[n]; n++)
 		{
 			if(!strcmp(attrs[n], "instance_id"))
 			{
-				instance_id_str = attrs[n + 1];
 				parser.setInstanceIdCurrent(atoi(attrs[n + 1]));
 			}
 			else if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(atof(attrs[n + 1]));
 		}
-		parser.pushState(startElAddInstanceMatrix_global, endElAddInstanceMatrix_global, instance_id_str);
+		parser.pushState(startElAddInstanceMatrix_global, endElAddInstanceMatrix_global, "");
 	}
 	else yafaray_printWarning(yafaray_interface, ("XMLParser: Skipping unrecognized scene element '" + std::string(element) + "'").c_str());
 }
 
 void endElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
 {
-	if(strcmp(element, "yafaray_xml") != 0) yafaray_printWarning(yafaray_interface, "XMLParser: expected </yafaray_xml> tag!");
+	if(strcmp(element, "yafaray_xml") != 0)
+		yafaray_printWarning(yafaray_interface, "XMLParser: expected </yafaray_xml> tag!");
 	else
 	{
 		parser.popState();
@@ -659,22 +662,18 @@ void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
-		if(element_name.empty()) yafaray_printWarning(yafaray_interface, ("XMLParser: No name for scene element '" + std::string(element) + "' available!").c_str());
+		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0)
+		{
+			yafaray_printWarning(yafaray_interface, ("XMLParser: No name for scene element '" + std::string(element) + "' available!").c_str());
+		}
 		else
 		{
-			if(!strcmp(element, "scene"))
-			{
-				yafaray_createScene(yafaray_interface);
-			}
+			if(!strcmp(element, "scene")) yafaray_createScene(yafaray_interface);
 			else if(!strcmp(element, "material")) yafaray_createMaterial(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "integrator")) yafaray_createIntegrator(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "light")) yafaray_createLight(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "texture"))
-			{
-				yafaray_createImage(yafaray_interface, element_name.c_str());
-				yafaray_paramsSetString(yafaray_interface, "image_name", element_name.c_str());
-				yafaray_createTexture(yafaray_interface, element_name.c_str());
-			}
+			else if(!strcmp(element, "image")) yafaray_createImage(yafaray_interface, element_name.c_str());
+			else if(!strcmp(element, "texture")) yafaray_createTexture(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "camera")) yafaray_createCamera(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "background")) yafaray_createBackground(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "object_parameters")) yafaray_createObject(yafaray_interface, element_name.c_str());
@@ -707,34 +706,26 @@ void endElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &pa
 	}
 }
 
-void startElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void endElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
 {
-	parser.setLastSection("AddInstanceObject");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
+	if(!strcmp(element, "createInstance"))
+	{
+		parser.popState();
+	}
 }
 
 void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "addInstanceObject"))
 	{
-		yafaray_addInstanceObject(yafaray_interface, parser.getInstanceIdCurrent(), element);
 		parser.popState();
 	}
-}
-
-void startElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
-{
-	parser.setLastSection("AddInstanceOfInstance");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 }
 
 void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "addInstanceOfInstance"))
 	{
-		yafaray_addInstanceOfInstance(yafaray_interface, parser.getInstanceIdCurrent(), atoi(element));
 		parser.popState();
 	}
 }
@@ -747,28 +738,7 @@ void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, Xml
 
 	if(!strcmp(element, "transform"))
 	{
-		parser.pushState(startElInstanceMatrixTransform_global, endElInstanceMatrixTransform_global, element);
-	}
-}
-
-void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
-{
-	if(!strcmp(element, "addInstanceMatrix"))
-	{
-		yafaray_addInstanceMatrixArray(yafaray_interface, parser.getInstanceIdCurrent(), parser.matrixCurrent(), parser.getTimeCurrent());
-		parser.popState();
-	}
-}
-
-void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
-{
-	parser.setLastSection("InstanceMatrixTransform");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
-
-	if(!strcmp(element, "transform"))
-	{
-		auto m = parser.matrixCurrent();
+		float m[4 * 4];
 		for(int n = 0; attrs[n]; ++n)
 		{
 			if(attrs[n][3] == '\0' && attrs[n][0] == 'm' && attrs[n][1] >= '0' && attrs[n][1] <= '3' && attrs[n][2] >= '0' && attrs[n][2] <= '3') //"mij" where i and j are between 0 and 3 (inclusive)
@@ -778,7 +748,23 @@ void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interfac
 				m[4 * i + j] = atof(attrs[n + 1]);
 			}
 		}
+		yafaray_addInstanceMatrixArray(yafaray_interface, parser.getInstanceIdCurrent(), m, parser.getTimeCurrent());
 	}
+}
+
+void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+{
+	if(!strcmp(element, "addInstanceMatrix"))
+	{
+		parser.popState();
+	}
+}
+
+void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+{
+	parser.setLastSection("InstanceMatrixTransform");
+	parser.setLastElementName(element);
+	parser.setLastElementNameAttrs(attrs);
 }
 
 void endElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)

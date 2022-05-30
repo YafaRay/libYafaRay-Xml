@@ -110,6 +110,8 @@ void startElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &
 void endElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 void startElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
 void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
+void endElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 void startElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
 void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
 void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);

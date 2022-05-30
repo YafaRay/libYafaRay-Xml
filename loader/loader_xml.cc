@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	else yafaray_setConsoleVerbosityLevel(yi, yafaray_logLevelFromString(verb_level.c_str()));
 
 	const std::string log_verb_level = parse.getOptionString("lvl");
-	if(log_verb_level.empty()) yafaray_setConsoleVerbosityLevel(yi, YAFARAY_LOG_LEVEL_VERBOSE);
+	if(log_verb_level.empty()) yafaray_setLogVerbosityLevel(yi, YAFARAY_LOG_LEVEL_VERBOSE);
 	else yafaray_setLogVerbosityLevel(yi, yafaray_logLevelFromString(verb_level.c_str()));
 
 	std::string input_color_space_string = parse.getOptionString("ics");
