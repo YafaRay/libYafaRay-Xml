@@ -424,7 +424,7 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
 
-	if(!strcmp(element, "material") || !strcmp(element, "integrator") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "camera") || !strcmp(element, "background") || !strcmp(element, "volumeregion") || !strcmp(element, "logging_badge") || !strcmp(element, "output") || !strcmp(element, "render_view"))
+	if(!strcmp(element, "material") || !strcmp(element, "integrator") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "camera") || !strcmp(element, "background") || !strcmp(element, "volumeregion") || !strcmp(element, "logging_badge") || !strcmp(element, "output") || !strcmp(element, "render_view") || !strcmp(element, "image"))
 	{
 		std::string element_name;
 		if(!attrs || !attrs[0])
