@@ -79,8 +79,8 @@ class XmlParser final
 		std::string getLastElementName() const { return current_->last_element_; }
 		std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
 		yafaray_Interface_t *getInterface() { return yafaray_interface_; }
-		size_t getInstanceIdCurrent() const { return instance_id_current_; }
-		void setInstanceIdCurrent(size_t instance_id_current) { instance_id_current_ = instance_id_current; }
+		int getInstanceIdCurrent() const { return instance_id_current_; }
+		void setInstanceIdCurrent(int instance_id_current) { instance_id_current_ = instance_id_current; }
 		float getTimeCurrent() const { return time_current_; }
 		void setTimeCurrent(float time_current) { time_current_ = time_current; }
 		float *matrixCurrent() { return reinterpret_cast<float *>(matrix_current_); }
@@ -93,7 +93,7 @@ class XmlParser final
 		int level_ = 0;
 		yafaray_Interface_t *yafaray_interface_ = nullptr;
 		float matrix_current_[4][4];
-		size_t instance_id_current_ = static_cast<size_t>(-1);
+		int instance_id_current_ = -1;
 		float time_current_ = 0.f;
 };
 
