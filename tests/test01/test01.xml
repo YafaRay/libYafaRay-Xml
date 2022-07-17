@@ -76,6 +76,66 @@ To test, using the terminal (or Windows "cmd") do this:
 	<exported_image_type sval="Color"/>
 </layer>
 
+<output name="xml_file_output">
+	<alpha_channel bval="true"/>
+	<alpha_premultiply bval="true"/>
+	<badge_author sval=""/>
+	<badge_comment sval="Tests for texture formats, render passes, denoise, logs and image film saving."/>
+	<badge_contact sval=""/>
+	<badge_draw_aa_noise_settings bval="false"/>
+	<badge_draw_render_settings bval="false"/>
+	<badge_font_path sval=""/>
+	<badge_font_size_factor fval="1"/>
+	<badge_position sval="top"/>
+	<badge_title sval="YafaRay v3 Test01"/>
+	<color_space sval="sRGB"/>
+	<denoise_enabled bval="true"/>
+	<denoise_h_col ival="5"/>
+	<denoise_h_lum ival="5"/>
+	<denoise_mix fval="0.8"/>
+	<gamma fval="1"/>
+	<height ival="270"/>
+	<image_path sval="test01 result.png"/>
+	<img_multilayer bval="false"/>
+	<logging_save_html bval="false"/>
+	<logging_save_txt bval="true"/>
+	<type sval="image_output"/>
+	<width ival="480"/>
+</output>
+
+<image name="Texture.005_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="sRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.tif"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
+
 <texture name="Texture.005">
 	<adj_clamp bval="true"/>
 	<adj_contrast fval="1"/>
@@ -93,9 +153,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.tif"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture.005_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -109,6 +169,39 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xrepeat ival="1"/>
 	<yrepeat ival="1"/>
 </texture>
+
+<image name="Texture.004_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="sRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.tga"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
 
 <texture name="Texture.004">
 	<adj_clamp bval="true"/>
@@ -127,9 +220,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.tga"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture.004_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -143,6 +236,39 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xrepeat ival="1"/>
 	<yrepeat ival="1"/>
 </texture>
+
+<image name="Texture.003_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="sRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.png"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
 
 <texture name="Texture.003">
 	<adj_clamp bval="true"/>
@@ -161,9 +287,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.png"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture.003_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -177,6 +303,39 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xrepeat ival="1"/>
 	<yrepeat ival="1"/>
 </texture>
+
+<image name="Texture.002_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="sRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.jpg"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
 
 <texture name="Texture.002">
 	<adj_clamp bval="true"/>
@@ -195,9 +354,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.jpg"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture.002_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -211,6 +370,39 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xrepeat ival="1"/>
 	<yrepeat ival="1"/>
 </texture>
+
+<image name="Texture.001_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="LinearRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.hdr"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
 
 <texture name="Texture.001">
 	<adj_clamp bval="true"/>
@@ -229,9 +421,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.hdr"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture.001_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -245,6 +437,39 @@ To test, using the terminal (or Windows "cmd") do this:
 	<xrepeat ival="1"/>
 	<yrepeat ival="1"/>
 </texture>
+
+<image name="Texture_image">
+	<adj_clamp bval="true"/>
+	<adj_contrast fval="1"/>
+	<adj_hue fval="0"/>
+	<adj_intensity fval="1"/>
+	<adj_mult_factor_blue fval="1"/>
+	<adj_mult_factor_green fval="1"/>
+	<adj_mult_factor_red fval="1"/>
+	<adj_saturation fval="1"/>
+	<calc_alpha bval="false"/>
+	<clipping sval="repeat"/>
+	<color_space sval="LinearRGB"/>
+	<cropmax_x fval="1"/>
+	<cropmax_y fval="1"/>
+	<cropmin_x fval="0"/>
+	<cropmin_y fval="0"/>
+	<ewa_max_anisotropy fval="8"/>
+	<filename sval="test01_tex.exr"/>
+	<gamma fval="1"/>
+	<image_optimization sval="optimized"/>
+	<img_grayscale bval="false"/>
+	<interpolate sval="bilinear"/>
+	<mirror_x bval="false"/>
+	<mirror_y bval="false"/>
+	<normalmap bval="false"/>
+	<rot90 bval="false"/>
+	<trilinear_level_bias fval="0"/>
+	<type sval="image"/>
+	<use_alpha bval="false"/>
+	<xrepeat ival="1"/>
+	<yrepeat ival="1"/>
+</image>
 
 <texture name="Texture">
 	<adj_clamp bval="true"/>
@@ -263,9 +488,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<fileformat sval="PNG"/>
 	<filename sval="test01_tex.exr"/>
 	<gamma fval="1"/>
+	<image_name sval="Texture_image"/>
 	<image_optimization sval="optimized"/>
 	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
@@ -281,14 +506,14 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <material name="defaultMat">
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<type sval="shinydiffusemat"/>
 </material>
 
 <material name="Material.008">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="0.5"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -325,7 +550,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -347,7 +572,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.007">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="1"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -384,7 +609,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -406,7 +631,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.006">
 	<IOR fval="1.5"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="0.6"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -443,7 +668,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -465,7 +690,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.005">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="0.4"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -502,7 +727,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -524,7 +749,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.004">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="1"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -561,7 +786,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -583,7 +808,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.003">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="1"/>
 	<diffuse_shader sval="diff_layer0"/>
 	<emit fval="0"/>
@@ -620,7 +845,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<noRGB bval="false"/>
 		<stencil bval="false"/>
 		<type sval="layer"/>
-		<upper_color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+		<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 		<upper_value fval="0"/>
 		<use_alpha bval="false"/>
 	</list_element>
@@ -642,7 +867,7 @@ To test, using the terminal (or Windows "cmd") do this:
 <material name="Material.002">
 	<IOR fval="1.8"/>
 	<additionaldepth ival="0"/>
-	<color r="0.906329" g="0.906329" b="0.906329" a="1"/>
+	<color r="0.8" g="0.8" b="0.8" a="1"/>
 	<diffuse_reflect fval="1"/>
 	<emit fval="0"/>
 	<flat_material bval="false"/>
@@ -665,22 +890,10 @@ To test, using the terminal (or Windows "cmd") do this:
 	<wireframe_thickness fval="0.01"/>
 </material>
 
-<light name="light_1">
+<light name="Point">
 	<cast_shadows bval="true"/>
 	<color r="1" g="1" b="1" a="1"/>
 	<from x="5.27648" y="-4.88993" z="8.89514"/>
-	<light_enabled bval="true"/>
-	<photon_only bval="false"/>
-	<power fval="72"/>
-	<type sval="pointlight"/>
-	<with_caustic bval="true"/>
-	<with_diffuse bval="true"/>
-</light>
-
-<light name="light_2">
-	<cast_shadows bval="true"/>
-	<color r="0" g="1" b="1" a="1"/>
-	<from x="3.27648" y="-7.88993" z="4.89514"/>
 	<light_enabled bval="true"/>
 	<photon_only bval="false"/>
 	<power fval="72"/>
@@ -693,10 +906,13 @@ To test, using the terminal (or Windows "cmd") do this:
 	<object_parameters name="Cube.005">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="5"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-4.40469" y="1.44162" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-4.40469" y="1.44162" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -707,28 +923,25 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="-2.40468" y="3.44162" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="-2.40468" y="3.44162" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.008"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Cube.004">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="4"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="3.26859" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="3.26859" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -739,28 +952,25 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="5.26859" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="5.26859" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.007"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Cube.003">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="3"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-0.635578" y="3.54144" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="3.54144" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -771,28 +981,25 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="1.36442" y="5.54144" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="1.36442" y="5.54144" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.006"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Cube.002">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="2"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-0.635578" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -803,28 +1010,25 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="1.36442" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="1.36442" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.005"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Cube.001">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="1"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-0.635578" y="-3.81854" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="-3.81854" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -835,28 +1039,25 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="1.36442" y="-1.81854" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="1.36442" y="-1.81854" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.004"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Cube">
 		<has_orco bval="true"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="6"/>
 		<num_vertices ival="8"/>
 		<object_index ival="0"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-5.01096" y="-1.94285" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-5.01096" y="-1.94285" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -867,72 +1068,56 @@ To test, using the terminal (or Windows "cmd") do this:
 	<p x="-3.01096" y="0.0571451" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 	<p x="-3.01096" y="0.0571451" z="2.00001" ox="1" oy="1" oz="1"/>
 	<set_material sval="Material.003"/>
-	<f a="2" b="0" c="1"/>
-	<f a="2" b="1" c="3"/>
-	<f a="3" b="7" c="6"/>
-	<f a="3" b="6" c="2"/>
-	<f a="7" b="5" c="4"/>
-	<f a="7" b="4" c="6"/>
-	<f a="0" b="4" c="5"/>
-	<f a="0" b="5" c="1"/>
-	<f a="0" b="2" c="6"/>
-	<f a="0" b="6" c="4"/>
-	<f a="5" b="7" c="3"/>
-	<f a="5" b="3" c="1"/>
+	<f a="2" b="0" c="1" d="3"/>
+	<f a="3" b="7" c="6" d="2"/>
+	<f a="7" b="5" c="4" d="6"/>
+	<f a="0" b="4" c="5" d="1"/>
+	<f a="0" b="2" c="6" d="4"/>
+	<f a="5" b="7" c="3" d="1"/>
 </object>
 
 <object>
 	<object_parameters name="Plane">
 		<has_orco bval="false"/>
 		<has_uv bval="false"/>
+		<is_base_object bval="false"/>
+		<motion_blur_bezier bval="false"/>
 		<num_faces ival="1"/>
 		<num_vertices ival="4"/>
 		<object_index ival="0"/>
 		<type sval="mesh"/>
+		<visibility sval="visible"/>
 	</object_parameters>
 	<p x="-10" y="-10" z="0"/>
 	<p x="10" y="-10" z="0"/>
 	<p x="-10" y="10" z="0"/>
 	<p x="10" y="10" z="0"/>
 	<set_material sval="Material.002"/>
-	<f a="0" b="1" c="3"/>
-	<f a="0" b="3" c="2"/>
+	<f a="0" b="1" c="3" d="2"/>
 </object>
 
-<camera name="cam_1">
+<camera name="Camera">
 	<aperture fval="0"/>
 	<bokeh_rotation fval="0"/>
 	<bokeh_type sval="disk1"/>
 	<dof_distance fval="0"/>
 	<focal fval="1.09375"/>
 	<from x="8.64791" y="-7.22615" z="8.1295"/>
-	<resx ival="640"/>
-	<resy ival="480"/>
+	<resx ival="480"/>
+	<resy ival="270"/>
 	<to x="8.03447" y="-6.65603" z="7.58301"/>
 	<type sval="perspective"/>
 	<up x="8.25644" y="-6.8447" z="8.9669"/>
-	<view_name sval=""/>
 </camera>
 
-<camera name="cam_2">
-	<aperture fval="0"/>
-	<bokeh_rotation fval="0"/>
-	<bokeh_type sval="disk1"/>
-	<dof_distance fval="0"/>
-	<focal fval="1.5"/>
-	<from x="8.64791" y="-7.22615" z="8.1295"/>
-	<resx ival="640"/>
-	<resy ival="480"/>
-	<to x="8.03447" y="-6.65603" z="7.58301"/>
-	<type sval="perspective"/>
-	<up x="8.25644" y="-6.8447" z="8.9669"/>
-	<view_name sval=""/>
-</camera>
+<render_view name="render_view">
+	<camera_name sval="Camera"/>
+</render_view>
 
-<background name="world_background">
+<background>
 	<cast_shadows bval="true"/>
 	<cast_shadows_sun bval="true"/>
-	<color r="0.854296" g="0.854296" b="0.854296" a="1"/>
+	<color r="0.7" g="0.7" b="0.7" a="1"/>
 	<ibl bval="false"/>
 	<ibl_samples ival="3"/>
 	<power fval="0.5"/>
@@ -941,65 +1126,45 @@ To test, using the terminal (or Windows "cmd") do this:
 	<with_diffuse bval="true"/>
 </background>
 
-<integrator name="default">
-	<AO_color r="0.954685" g="0.954685" b="0.954685" a="1"/>
+<surface_integrator>
+	<AO_color r="0.9" g="0.9" b="0.9" a="1"/>
 	<AO_distance fval="1"/>
 	<AO_samples ival="32"/>
 	<bg_transp bval="false"/>
 	<bg_transp_refract bval="false"/>
-	<caustics bval="false"/>
+	<bounces ival="4"/>
+	<cPhotons ival="50000"/>
+	<causticRadius fval="1"/>
+	<caustic_mix ival="100"/>
+	<caustics bval="true"/>
+	<diffuse bval="true"/>
+	<diffuseRadius fval="1"/>
 	<do_AO bval="false"/>
+	<fg_bounces ival="3"/>
+	<fg_samples ival="4"/>
+	<finalGather bval="true"/>
 	<photon_maps_processing sval="generate-only"/>
-	<raydepth ival="8"/>
+	<photons ival="50000"/>
+	<raydepth ival="2"/>
+	<search ival="100"/>
 	<shadowDepth ival="2"/>
+	<show_map bval="false"/>
+	<time_forced bval="false"/>
+	<time_forced_value fval="0"/>
 	<transpShad bval="false"/>
 	<type sval="directlighting"/>
-</integrator>
+</surface_integrator>
 
-<integrator name="volintegr">
+<volume_integrator>
 	<type sval="none"/>
-</integrator>
+</volume_integrator>
 
-<output name="output1_png">
-	<image_path sval="./test01_png.png"/>
-	<color_space sval="sRGB"/>
-	<gamma fval="1"/>
-	<denoise_enabled bval="true"/>
-	<denoise_h_col ival="5"/>
-	<denoise_h_lum ival="5"/>
-	<denoise_mix fval="0.8"/>
-	<badge_position sval="top"/>
-	<badge_title sval="YafaRay v4 Test01 (PNG output)"/>
-	<badge_author sval="YafaRay authors"/>
-	<badge_comment sval="Tests for texture formats, render passes, denoise, logs and image film saving."/>
-	<badge_contact sval="https://github.com/YafaRay/libYafaRay/issues"/>
-	<badge_font_path sval=""/>
-	<badge_font_size_factor fval="1"/>
-	<badge_draw_aa_noise_settings bval="false"/>
-	<badge_draw_render_settings bval="false"/>
-	<logging_save_html bval="true"/>
-	<logging_save_txt bval="true"/>
-</output>
-
-<output name="output2_exr">
-	<image_path sval="./test01_exr.exr"/>
-	<multi_layer bval="true"/>
-	<logging_save_txt bval="true"/>
-	<badge_position sval="top"/>
-	<badge_title sval="YafaRay v4 Test01 (EXR output)"/>
-</output>
-
-<render_view name="view_1">
-	<camera_name sval="cam_1"/>
-	<light_names sval="light_1;light_2"/>
-	<wavelength fval="0.0"/> <!-- wavelength = 0.0 means normal rendering, not spectral -->
-</render_view>
-
-<render_view name="view_2">
-	<camera_name sval="cam_2"/>
-	<light_names sval="light_2"/>
-	<wavelength fval="0.0"/> <!-- wavelength = 0.0 means normal rendering, not spectral -->
-</render_view>
+<layer>
+	<exported_image_name sval="Combined"/>
+	<exported_image_type sval="ColorAlpha"/>
+	<image_type sval="ColorAlpha"/>
+	<type sval="combined"/>
+</layer>
 
 <render>
 	<AA_clamp_indirect fval="0"/>
@@ -1012,7 +1177,7 @@ To test, using the terminal (or Windows "cmd") do this:
 	<AA_light_sample_multiplier_factor fval="1"/>
 	<AA_minsamples ival="1"/>
 	<AA_passes ival="1"/>
-	<AA_pixelwidth fval="1.5"/>
+	<AA_pixelwidth fval="1"/>
 	<AA_resampled_floor fval="0"/>
 	<AA_sample_multiplier_factor fval="1"/>
 	<AA_threshold fval="0.05"/>
@@ -1021,34 +1186,43 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adv_auto_min_raydist_enabled bval="true"/>
 	<adv_auto_shadow_bias_enabled bval="true"/>
 	<adv_base_sampling_offset ival="0"/>
-	<adv_computer_node ival="0"/>
+	<adv_computer_node ival="123"/>
 	<adv_min_raydist_value fval="5e-05"/>
 	<adv_shadow_bias_value fval="0.0005"/>
-	<background_name sval="world_background"/>
 	<background_resampling bval="true"/>
-	<film_load_save_mode sval="save"/>
-	<film_load_save_path sval="./test01_v4"/>
 	<film_autosave_interval_passes ival="1"/>
 	<film_autosave_interval_seconds fval="300"/>
 	<film_autosave_interval_type sval="none"/>
-	<filter_type sval="gauss"/>
+	<film_load_save_mode sval="save"/>
+	<film_load_save_path sval="test01_render/test01 - 1"/>
+	<filter_type sval="box"/>
+	<height ival="270"/>
 	<images_autosave_interval_passes ival="1"/>
 	<images_autosave_interval_seconds fval="300"/>
 	<images_autosave_interval_type sval="none"/>
-	<integrator_name sval="default"/>
-	<premult bval="false"/>
+	<layer_faces_edge_smoothness fval="0.5"/>
+	<layer_faces_edge_thickness ival="1"/>
+	<layer_faces_edge_threshold fval="0.01"/>
+	<layer_mask_invert bval="false"/>
+	<layer_mask_mat_index ival="2"/>
+	<layer_mask_obj_index ival="2"/>
+	<layer_mask_only bval="false"/>
+	<layer_object_edge_smoothness fval="0.75"/>
+	<layer_object_edge_thickness ival="2"/>
+	<layer_object_edge_threshold fval="0.3"/>
+	<layer_toon_edge_color r="0" g="0" b="0" a="1"/>
+	<layer_toon_post_smooth fval="3"/>
+	<layer_toon_pre_smooth fval="3"/>
+	<layer_toon_quantization fval="0.1"/>
+	<scene_accelerator sval="yafaray-kdtree-multi-thread"/>
 	<show_sam_pix bval="true"/>
-	<scene_accelerator sval="yafaray-kdtree-original"/>
-	<!-- other possible values: "yafaray-kdtree-multi-thread", "yafaray-simpletest" -->
-	<threads ival="-1"/>
-	<threads_photons ival="-1"/>
+	<threads ival="1"/>
+	<threads_photons ival="1"/>
 	<tile_size ival="32"/>
 	<tiles_order sval="centre"/>
-	<type sval="none"/>
-	<volintegrator_name sval="volintegr"/>
-	<width ival="640"/>
-	<height ival="480"/>
+	<width ival="480"/>
 	<xstart ival="0"/>
 	<ystart ival="0"/>
 </render>
+
 </yafaray_xml>

@@ -424,7 +424,7 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
 
-	if(!strcmp(element, "material") || !strcmp(element, "integrator") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "camera") || !strcmp(element, "background") || !strcmp(element, "volumeregion") || !strcmp(element, "logging_badge") || !strcmp(element, "output") || !strcmp(element, "render_view") || !strcmp(element, "image"))
+	if(!strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "camera") || !strcmp(element, "volumeregion") || !strcmp(element, "logging_badge") || !strcmp(element, "output") || !strcmp(element, "render_view") || !strcmp(element, "image"))
 	{
 		std::string element_name;
 		if(!attrs || !attrs[0])
@@ -440,7 +440,7 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 		}
 		parser.pushState(startElParammap_global, endElParammap_global, element_name);
 	}
-	else if(!strcmp(element, "layer") || !strcmp(element, "scene") || !strcmp(element, "render"))
+	else if(!strcmp(element, "layer") || !strcmp(element, "scene") || !strcmp(element, "render") || !strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator") || !strcmp(element, "background"))
 	{
 		parser.pushState(startElParammap_global, endElParammap_global, "___no_name___");
 	}
@@ -662,7 +662,7 @@ void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
-		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0)
+		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0 && strcmp(element, "background") != 0 && strcmp(element, "surface_integrator") != 0 && strcmp(element, "volume_integrator") != 0)
 		{
 			yafaray_printWarning(yafaray_interface, ("XMLParser: No name for scene element '" + std::string(element) + "' available!").c_str());
 		}
@@ -670,12 +670,13 @@ void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 		{
 			if(!strcmp(element, "scene")) yafaray_createScene(yafaray_interface);
 			else if(!strcmp(element, "material")) yafaray_createMaterial(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "integrator")) yafaray_createIntegrator(yafaray_interface, element_name.c_str());
+			else if(!strcmp(element, "surface_integrator")) yafaray_defineSurfaceIntegrator(yafaray_interface);
+			else if(!strcmp(element, "volume_integrator")) yafaray_defineVolumeIntegrator(yafaray_interface);
 			else if(!strcmp(element, "light")) yafaray_createLight(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "image")) yafaray_createImage(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "texture")) yafaray_createTexture(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "camera")) yafaray_createCamera(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "background")) yafaray_createBackground(yafaray_interface, element_name.c_str());
+			else if(!strcmp(element, "background")) yafaray_defineBackground(yafaray_interface);
 			else if(!strcmp(element, "object_parameters")) yafaray_createObject(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "volumeregion")) yafaray_createVolumeRegion(yafaray_interface, element_name.c_str());
 			else if(!strcmp(element, "layer")) { yafaray_defineLayer(yafaray_interface); }
