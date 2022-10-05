@@ -16,69 +16,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	<type sval="yafaray"/>
 </scene>
 
-<layer>
-	<type sval="combined"/>
-	<exported_image_name sval="Combined"/>
-	<exported_image_type sval="ColorAlpha"/>
-</layer>
-
-<layer>
-	<type sval="z-depth-norm"/>
-	<exported_image_name sval="Depth"/>
-	<exported_image_type sval="Gray"/>
-</layer>
-
-<layer>
-	<type sval="mat-index-auto"/>
-	<exported_image_name sval="Vector"/>
-	<exported_image_type sval="ColorAlpha"/>
-</layer>
-
-<layer>
-	<type sval="debug-normal-smooth"/>
-	<exported_image_name sval="Normal"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
-<layer>
-	<type sval="obj-index-auto"/>
-	<exported_image_name sval="UV"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
-<layer>
-	<type sval="mist"/>
-	<exported_image_name sval="Mist"/>
-	<exported_image_type sval="Gray"/>
-</layer>
-
-<layer>
-	<type sval="diffuse"/>
-	<exported_image_name sval="Diffuse"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
-<layer>
-	<type sval="ao-clay"/>
-	<exported_image_name sval="AO"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
-<layer>
-	<type sval="env"/>
-	<exported_image_name sval="Env"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
-<layer>
-	<type sval="shadow"/>
-	<exported_image_name sval="Shadow"/>
-	<exported_image_type sval="Color"/>
-</layer>
-
 <output name="xml_file_output">
 	<alpha_channel bval="true"/>
-	<alpha_premultiply bval="true"/>
+	<alpha_premultiply bval="false"/>
 	<badge_author sval=""/>
 	<badge_comment sval="Tests for texture formats, render passes, denoise, logs and image film saving."/>
 	<badge_contact sval=""/>
@@ -87,53 +27,24 @@ To test, using the terminal (or Windows "cmd") do this:
 	<badge_font_path sval=""/>
 	<badge_font_size_factor fval="1"/>
 	<badge_position sval="top"/>
-	<badge_title sval="YafaRay v3 Test01"/>
+	<badge_title sval="YafaRay Test01"/>
 	<color_space sval="sRGB"/>
 	<denoise_enabled bval="true"/>
 	<denoise_h_col ival="5"/>
 	<denoise_h_lum ival="5"/>
 	<denoise_mix fval="0.8"/>
 	<gamma fval="1"/>
-	<height ival="270"/>
-	<image_path sval="test01 result.png"/>
-	<img_multilayer bval="false"/>
-	<logging_save_html bval="false"/>
+	<image_path sval="test01 - 001.png"/>
+	<logging_save_html bval="true"/>
 	<logging_save_txt bval="true"/>
-	<type sval="image_output"/>
-	<width ival="480"/>
+	<multi_layer bval="false"/>
 </output>
 
 <image name="Texture.005_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="sRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.tif"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture.005">
@@ -147,17 +58,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="sRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.tif"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture.005_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -171,36 +77,10 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <image name="Texture.004_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="sRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.tga"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture.004">
@@ -214,17 +94,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="sRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.tga"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture.004_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -238,36 +113,10 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <image name="Texture.003_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="sRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.png"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture.003">
@@ -281,17 +130,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="sRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.png"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture.003_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -305,36 +149,10 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <image name="Texture.002_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="sRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.jpg"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture.002">
@@ -348,17 +166,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="sRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.jpg"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture.002_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -372,36 +185,10 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <image name="Texture.001_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="LinearRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.hdr"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture.001">
@@ -415,17 +202,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="LinearRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.hdr"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture.001_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -439,36 +221,10 @@ To test, using the terminal (or Windows "cmd") do this:
 </texture>
 
 <image name="Texture_image">
-	<adj_clamp bval="true"/>
-	<adj_contrast fval="1"/>
-	<adj_hue fval="0"/>
-	<adj_intensity fval="1"/>
-	<adj_mult_factor_blue fval="1"/>
-	<adj_mult_factor_green fval="1"/>
-	<adj_mult_factor_red fval="1"/>
-	<adj_saturation fval="1"/>
-	<calc_alpha bval="false"/>
-	<clipping sval="repeat"/>
 	<color_space sval="LinearRGB"/>
-	<cropmax_x fval="1"/>
-	<cropmax_y fval="1"/>
-	<cropmin_x fval="0"/>
-	<cropmin_y fval="0"/>
-	<ewa_max_anisotropy fval="8"/>
 	<filename sval="test01_tex.exr"/>
 	<gamma fval="1"/>
 	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
-	<interpolate sval="bilinear"/>
-	<mirror_x bval="false"/>
-	<mirror_y bval="false"/>
-	<normalmap bval="false"/>
-	<rot90 bval="false"/>
-	<trilinear_level_bias fval="0"/>
-	<type sval="image"/>
-	<use_alpha bval="false"/>
-	<xrepeat ival="1"/>
-	<yrepeat ival="1"/>
 </image>
 
 <texture name="Texture">
@@ -482,17 +238,12 @@ To test, using the terminal (or Windows "cmd") do this:
 	<adj_saturation fval="1"/>
 	<calc_alpha bval="false"/>
 	<clipping sval="repeat"/>
-	<color_space sval="LinearRGB"/>
 	<cropmax_x fval="1"/>
 	<cropmax_y fval="1"/>
 	<cropmin_x fval="0"/>
 	<cropmin_y fval="0"/>
 	<ewa_max_anisotropy fval="8"/>
-	<filename sval="test01_tex.exr"/>
-	<gamma fval="1"/>
 	<image_name sval="Texture_image"/>
-	<image_optimization sval="optimized"/>
-	<img_grayscale bval="false"/>
 	<interpolate sval="bilinear"/>
 	<mirror_x bval="false"/>
 	<mirror_y bval="false"/>
@@ -912,7 +663,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="5"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-4.40469" y="1.44162" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-4.40469" y="1.44162" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -941,7 +692,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="4"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="3.26859" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="3.26859" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -970,7 +721,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="3"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-0.635578" y="3.54144" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="3.54144" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -999,7 +750,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="2"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-0.635578" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -1028,7 +779,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="1"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-0.635578" y="-3.81854" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-0.635578" y="-3.81854" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -1057,7 +808,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="8"/>
 		<object_index ival="0"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-5.01096" y="-1.94285" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 	<p x="-5.01096" y="-1.94285" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -1086,7 +837,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		<num_vertices ival="4"/>
 		<object_index ival="0"/>
 		<type sval="mesh"/>
-		<visibility sval="visible"/>
+		<visibility sval="normal"/>
 	</object_parameters>
 	<p x="-10" y="-10" z="0"/>
 	<p x="10" y="-10" z="0"/>
@@ -1116,7 +867,6 @@ To test, using the terminal (or Windows "cmd") do this:
 
 <background>
 	<cast_shadows bval="true"/>
-	<cast_shadows_sun bval="true"/>
 	<color r="0.7" g="0.7" b="0.7" a="1"/>
 	<ibl bval="false"/>
 	<ibl_samples ival="3"/>
@@ -1132,23 +882,11 @@ To test, using the terminal (or Windows "cmd") do this:
 	<AO_samples ival="32"/>
 	<bg_transp bval="false"/>
 	<bg_transp_refract bval="false"/>
-	<bounces ival="4"/>
-	<cPhotons ival="50000"/>
-	<causticRadius fval="1"/>
-	<caustic_mix ival="100"/>
-	<caustics bval="true"/>
-	<diffuse bval="true"/>
-	<diffuseRadius fval="1"/>
+	<caustics bval="false"/>
 	<do_AO bval="false"/>
-	<fg_bounces ival="3"/>
-	<fg_samples ival="4"/>
-	<finalGather bval="true"/>
 	<photon_maps_processing sval="generate-only"/>
-	<photons ival="50000"/>
-	<raydepth ival="2"/>
-	<search ival="100"/>
+	<raydepth ival="8"/>
 	<shadowDepth ival="2"/>
-	<show_map bval="false"/>
 	<time_forced bval="false"/>
 	<time_forced_value fval="0"/>
 	<transpShad bval="false"/>
@@ -1166,6 +904,69 @@ To test, using the terminal (or Windows "cmd") do this:
 	<type sval="combined"/>
 </layer>
 
+<layer>
+	<exported_image_name sval="Depth"/>
+	<exported_image_type sval="Gray"/>
+	<image_type sval="Gray"/>
+	<type sval="z-depth-norm"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Vector"/>
+	<exported_image_type sval="ColorAlpha"/>
+	<image_type sval="ColorAlpha"/>
+	<type sval="mat-index-auto"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Normal"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="debug-normal-smooth"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="UV"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="obj-index-auto"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Mist"/>
+	<exported_image_type sval="Gray"/>
+	<image_type sval="Gray"/>
+	<type sval="mist"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Diffuse"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="diffuse"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="AO"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="ao-clay"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Env"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="env"/>
+</layer>
+
+<layer>
+	<exported_image_name sval="Shadow"/>
+	<exported_image_type sval="Color"/>
+	<image_type sval="Color"/>
+	<type sval="shadow"/>
+</layer>
+
 <render>
 	<AA_clamp_indirect fval="0"/>
 	<AA_clamp_samples fval="0"/>
@@ -1177,7 +978,7 @@ To test, using the terminal (or Windows "cmd") do this:
 	<AA_light_sample_multiplier_factor fval="1"/>
 	<AA_minsamples ival="1"/>
 	<AA_passes ival="1"/>
-	<AA_pixelwidth fval="1"/>
+	<AA_pixelwidth fval="1.5"/>
 	<AA_resampled_floor fval="0"/>
 	<AA_sample_multiplier_factor fval="1"/>
 	<AA_threshold fval="0.05"/>
@@ -1194,8 +995,8 @@ To test, using the terminal (or Windows "cmd") do this:
 	<film_autosave_interval_seconds fval="300"/>
 	<film_autosave_interval_type sval="none"/>
 	<film_load_save_mode sval="save"/>
-	<film_load_save_path sval="test01_render/test01 - 1"/>
-	<filter_type sval="box"/>
+	<film_load_save_path sval="test01 - 1"/>
+	<filter_type sval="gauss"/>
 	<height ival="270"/>
 	<images_autosave_interval_passes ival="1"/>
 	<images_autosave_interval_seconds fval="300"/>
@@ -1214,15 +1015,14 @@ To test, using the terminal (or Windows "cmd") do this:
 	<layer_toon_post_smooth fval="3"/>
 	<layer_toon_pre_smooth fval="3"/>
 	<layer_toon_quantization fval="0.1"/>
-	<scene_accelerator sval="yafaray-kdtree-multi-thread"/>
+	<scene_accelerator sval="yafaray-kdtree-original"/>
 	<show_sam_pix bval="true"/>
-	<threads ival="1"/>
-	<threads_photons ival="1"/>
+	<threads ival="-1"/>
+	<threads_photons ival="-1"/>
 	<tile_size ival="32"/>
 	<tiles_order sval="centre"/>
 	<width ival="480"/>
 	<xstart ival="0"/>
 	<ystart ival="0"/>
 </render>
-
 </yafaray_xml>
