@@ -130,12 +130,14 @@ int main(int argc, char *argv[])
 //#define USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
 #ifdef USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
 	// Test using standard ParseMemory (alternative just to demonstrate memory parsing)
-	yafaray_printInfo(yi, ("Parsing file '" + xml_file_path + "' using alternate ParseMemory method").c_str());
+	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using alternate ParseMemory method").c_str());
 	const std::ifstream xml_stream(xml_file_path);
 	std::stringstream xml_stream_buffer;
 	xml_stream_buffer << xml_stream.rdbuf();
 	const std::string xml_string = xml_stream_buffer.str();
-	yafaray_xml_ParseMemory(yi, xml_string.c_str(), xml_string.size());
+	yafaray_Scene *yafaray_scene = nullptr;
+	yafaray_Film *yafaray_film = nullptr;
+	yafaray_xml_ParseMemory(yafaray_logger_global, &yafaray_scene, &yafaray_renderer_global, &yafaray_film, xml_string.c_str(), static_cast<int>(xml_string.size()), input_color_space_string.c_str(), input_gamma);
 #else
 	// Regular code using standard ParseFile (recommended)
 	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
