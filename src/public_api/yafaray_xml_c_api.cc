@@ -21,18 +21,18 @@
 #include "common/version_build_info.h"
 #include <cstring>
 
-bool yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_file_path)
+bool yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_file_path, const char *input_color_space, float input_gamma)
 {
-	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlFile(yafaray_logger, xml_file_path)};
+	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlFile(yafaray_logger, xml_file_path, input_color_space, input_gamma)};
 	if(yafaray_scene) *yafaray_scene = scene;
 	if(yafaray_renderer) *yafaray_renderer = renderer;
 	if(yafaray_film) *yafaray_film = film;
 	return result;
 }
 
-bool yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_buffer, int xml_buffer_size)
+bool yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma)
 {
-	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlMemory(yafaray_logger, xml_buffer, xml_buffer_size)};
+	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlMemory(yafaray_logger, xml_buffer, xml_buffer_size, input_color_space, input_gamma)};
 	if(yafaray_scene) *yafaray_scene = scene;
 	if(yafaray_renderer) *yafaray_renderer = renderer;
 	if(yafaray_film) *yafaray_film = film;

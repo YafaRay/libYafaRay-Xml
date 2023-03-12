@@ -146,9 +146,9 @@ static xmlSAXHandler my_handler_global =
 	myFatalError
 };
 
-std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
 {
-	XmlParser parser{yafaray_logger};
+	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_file_path || xmlSAXUserParseFile(&my_handler_global, &parser, xml_file_path) < 0)
 	{
 		yafaray_printError(parser.getLogger(), ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
@@ -157,9 +157,9 @@ std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser:
 	else return {true, parser.getScene(), parser.getRenderer(), parser.getFilm()};
 }
 
-std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept
 {
-	XmlParser parser{yafaray_logger};
+	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_buffer || xml_buffer_size <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size) < 0)
 	{
 		yafaray_printError(parser.getLogger(), "XMLParser: Error parsing a memory buffer");
@@ -172,11 +172,12 @@ std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser:
 / parser functions
 =============================================================*/
 
-XmlParser::XmlParser(yafaray_Logger *yafaray_logger) :
+XmlParser::XmlParser(yafaray_Logger *yafaray_logger, const char *input_color_space, float input_gamma) :
 	yafaray_logger_{yafaray_logger},
 	yafaray_param_map_{yafaray_createParamMap()},
 	yafaray_param_map_list_{yafaray_createParamMapList()}
 {
+	if(yafaray_param_map_) yafaray_setInputColorSpace(yafaray_param_map_, input_color_space, input_gamma);
 	std::setlocale(LC_NUMERIC, "C"); //To make sure floating points in the xml file are evaluated using the dot and not a comma in some locales
 	pushState(startElDocument, endElDocument, "");
 }

@@ -122,7 +122,6 @@ int main(int argc, char *argv[])
 	if(input_color_space_string.empty()) input_color_space_string = "LinearRGB";
 	float input_gamma = static_cast<float>(parse.getOptionFloat("ig"));
 	if(isNan_global(input_gamma)) input_gamma = 1.f;
-	//FIXME? yafaray_setInputColorSpace(yafaray_logger_global, input_color_space_string.c_str(), input_gamma);
 
 	const std::vector<std::string> files = parse.getCleanArgs();
 	if(files.empty()) return 0;
@@ -142,7 +141,7 @@ int main(int argc, char *argv[])
 	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
 	yafaray_Scene *yafaray_scene = nullptr;
 	yafaray_Film *yafaray_film = nullptr;
-	yafaray_xml_ParseFile(yafaray_logger_global, &yafaray_scene, &yafaray_renderer_global, &yafaray_film, xml_file_path.c_str());
+	yafaray_xml_ParseFile(yafaray_logger_global, &yafaray_scene, &yafaray_renderer_global, &yafaray_film, xml_file_path.c_str(), input_color_space_string.c_str(), input_gamma);
 #endif
 	yafaray_ParamMap *yafaray_param_map = yafaray_createParamMap();
 	yafaray_setupRender(yafaray_scene, yafaray_renderer_global, yafaray_param_map); /* FIXME is param_map necessary here? */

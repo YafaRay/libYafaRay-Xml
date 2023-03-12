@@ -64,7 +64,7 @@ struct Rgba
 class XmlParser final
 {
 	public:
-		explicit XmlParser(yafaray_Logger *yafaray_logger);
+		XmlParser(yafaray_Logger *yafaray_logger, const char *input_color_space, float input_gamma);
 		~XmlParser();
 		void pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name);
 		void popState();
@@ -105,8 +105,8 @@ class XmlParser final
 		void setMaterialIdCurrent(size_t material_id_current) { material_id_current_ = material_id_current; }
 		[[nodiscard]] float getTimeCurrent() const { return time_current_; }
 		void setTimeCurrent(float time_current) { time_current_ = time_current; }
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path) noexcept;
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept;
 
 	private:
 		std::vector<ParserState> state_stack_;
