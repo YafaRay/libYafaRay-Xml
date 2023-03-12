@@ -74,7 +74,6 @@ int main(int argc, char *argv[])
 
 	parse.setOption("v", "version", true, "Displays this program's version.");
 	parse.setOption("h", "help", true, "Displays this help text.");
-	parse.setOption("l", "log-file-output", false, R"(Enable log file output(s): "none", "txt", "html" or "txt+html". Log file name will be same as selected image name,)");
 	parse.setOption("vl", "verbosity-level", false, "Set console verbosity level, options are:\n                                       \"mute\" (Prints nothing)\n                                       \"error\" (Prints only errors)\n                                       \"warning\" (Prints also warnings)\n                                       \"params\" (Prints also render param messages)\n                                       \"info\" (Prints also basi info messages)\n                                       \"verbose\" (Prints additional info messages)\n                                       \"debug\" (Prints debug messages if any)\n");
 	parse.setOption("lvl", "log-verbosity-level", false, "Set log/HTML files verbosity level, options are the same as for the \"verbosity-level\" parameter\n");
 	parse.setOption("nodt", "no-date-time", true, "If specified, disables the logging of the date/time in the screen and file logs");
@@ -128,16 +127,6 @@ int main(int argc, char *argv[])
 	const std::vector<std::string> files = parse.getCleanArgs();
 	if(files.empty()) return 0;
 	const auto &xml_file_path{files.at(0)};
-
-/*	FIXME!
-	const std::string log_file_types = parse.getOptionString("l");
-	bool save_txt = false;
-	bool save_html = false;
-	if(log_file_types == "txt") save_txt = true;
-	else if(log_file_types == "html") save_html = true;
-	else if(log_file_types == "txt+html") { save_txt = true; save_html = true; }
-	yafaray_setParamMapBool(yafaray_logger_global, "logging_save_txt", static_cast<yafaray_Bool>(save_txt));
-	yafaray_setParamMapBool(yafaray_logger_global, "logging_save_html", static_cast<yafaray_Bool>(save_html));*/
 
 //#define USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
 #ifdef USE_XML_ALTERNATE_MEMORY_PARSING_METHOD
