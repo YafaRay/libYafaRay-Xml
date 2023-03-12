@@ -33,7 +33,7 @@ extern "C" {
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMajor();
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMinor();
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionPatch();
-	/* The following functions return a text string where memory is allocated by libYafaRay itself. Do not free the char* directly with free, use "yafaray_xml_deallocateCharPointer" to free them instead to ensure proper deallocation. */
+	/* The following functions return a text string where memory is allocated by libYafaRay itself. Do not free the char* directly with free, use "yafaray_xml_destroyCharString" to free them instead to ensure proper deallocation. */
 	YAFARAY_XML_C_API_EXPORT char *yafaray_xml_getVersionString();
 	YAFARAY_XML_C_API_EXPORT void yafaray_xml_destroyCharString(char *string);
 
