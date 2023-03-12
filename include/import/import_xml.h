@@ -20,20 +20,20 @@
 #ifndef YAFARAY_IMPORT_XML_H
 #define YAFARAY_IMPORT_XML_H
 
-#include "common/yafaray_xml_common.h"
 #include <yafaray_c_api.h>
 #include <list>
 #include <vector>
 #include <string>
 #include <memory>
 
-BEGIN_YAFARAY_XML
+namespace yafaray_xml
+{
 
 class XmlParser;
 enum ColorSpace : int;
 
-typedef void (*StartElementCb_t)(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-typedef void (*EndElementCb_t)(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+typedef void (*StartElementCb_t)(XmlParser &p, const char *element, const char **attrs);
+typedef void (*EndElementCb_t)(XmlParser &p, const char *element);
 
 struct ParserState
 {
@@ -64,61 +64,94 @@ struct Rgba
 class XmlParser final
 {
 	public:
-		XmlParser(yafaray_Interface_t *yafaray_interface);
+		explicit XmlParser(yafaray_Logger *yafaray_logger);
+		~XmlParser();
 		void pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name);
 		void popState();
-		void startElement(yafaray_Interface_t *yafaray_interface, const char *element, const char **attrs) { ++level_; if(current_) current_->start_(yafaray_interface, *this, element, attrs); }
-		void endElement(yafaray_Interface_t *yafaray_interface, const char *element) { if(current_) current_->end_(yafaray_interface, *this, element); --level_; }
-		std::string stateElementName() { return current_->element_name_; }
-		int currLevel() const { return level_; }
-		int stateLevel() const { return current_ ? current_->level_ : -1; }
+		void startElement(const char *element, const char **attrs) { ++level_; if(current_) current_->start_(*this, element, attrs); }
+		void endElement(const char *element) { if(current_) current_->end_(*this, element); --level_; }
+		[[nodiscard]] std::string stateElementName() const { return current_->element_name_; }
+		[[nodiscard]] int currLevel() const { return level_; }
+		[[nodiscard]] int stateLevel() const { return current_ ? current_->level_ : -1; }
 		void setLastSection(const std::string &section) { current_->last_section_ = section; }
 		void setLastElementName(const char *element_name);
 		void setLastElementNameAttrs(const char **element_attrs);
-		std::string getLastSection() const { return current_->last_section_; }
-		std::string getLastElementName() const { return current_->last_element_; }
-		std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
-		yafaray_Interface_t *getInterface() { return yafaray_interface_; }
-		int getInstanceIdCurrent() const { return instance_id_current_; }
-		void setInstanceIdCurrent(int instance_id_current) { instance_id_current_ = instance_id_current; }
-		float getTimeCurrent() const { return time_current_; }
+		[[nodiscard]] std::string getLastSection() const { return current_->last_section_; }
+		[[nodiscard]] std::string getLastElementName() const { return current_->last_element_; }
+		[[nodiscard]] std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
+		[[nodiscard]] yafaray_Logger *getLogger() { return yafaray_logger_; }
+		[[nodiscard]] const yafaray_Logger *getLogger() const { return yafaray_logger_; }
+		void createScene(const char *name);
+		[[nodiscard]] yafaray_Scene *getScene() { return yafaray_scene_; }
+		[[nodiscard]] const yafaray_Scene *getScene() const { return yafaray_scene_; }
+		void createRenderer(const char *name, yafaray_DisplayConsole);
+		[[nodiscard]] yafaray_Renderer *getRenderer() { return yafaray_renderer_; }
+		[[nodiscard]] const yafaray_Renderer *getRenderer() const { return yafaray_renderer_; }
+		void createFilm(const char *name);
+		[[nodiscard]] yafaray_Film *getFilm() { return yafaray_film_; }
+		[[nodiscard]] const yafaray_Film *getFilm() const { return yafaray_film_; }
+		[[nodiscard]] yafaray_ParamMap *getParamMap() { return yafaray_param_map_; }
+		[[nodiscard]] const yafaray_ParamMap *getParamMap() const { return yafaray_param_map_; }
+		void clearParamMap() { yafaray_clearParamMap(yafaray_param_map_); }
+		void clearParamMapList() { yafaray_clearParamMapList(yafaray_param_map_list_); }
+		[[nodiscard]] yafaray_ParamMapList *getParamMapList() { return yafaray_param_map_list_; }
+		[[nodiscard]] const yafaray_ParamMapList *getParamMapList() const { return yafaray_param_map_list_; }
+		void addParamMapToList() { yafaray_addParamMapToList(yafaray_param_map_list_, yafaray_param_map_); }
+		[[nodiscard]] size_t getInstanceIdCurrent() const { return instance_id_current_; }
+		void setInstanceIdCurrent(size_t instance_id_current) { instance_id_current_ = instance_id_current; }
+		[[nodiscard]] size_t getObjectIdCurrent() const { return object_id_current_; }
+		void setObjectIdCurrent(size_t object_id_current) { object_id_current_ = object_id_current; }
+		[[nodiscard]] size_t getMaterialIdCurrent() const { return material_id_current_; }
+		void setMaterialIdCurrent(size_t material_id_current) { material_id_current_ = material_id_current; }
+		[[nodiscard]] float getTimeCurrent() const { return time_current_; }
 		void setTimeCurrent(float time_current) { time_current_ = time_current; }
-		float *matrixCurrent() { return reinterpret_cast<float *>(matrix_current_); }
-		static bool parseXmlFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path) noexcept;
-		static bool parseXmlMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size) noexcept;
 
 	private:
 		std::vector<ParserState> state_stack_;
 		ParserState *current_ = nullptr;
 		int level_ = 0;
-		yafaray_Interface_t *yafaray_interface_ = nullptr;
-		float matrix_current_[4][4];
-		int instance_id_current_ = -1;
+		yafaray_Logger *yafaray_logger_ = nullptr;
+		yafaray_Scene *yafaray_scene_ = nullptr;
+		yafaray_Renderer *yafaray_renderer_ = nullptr;
+		yafaray_Film *yafaray_film_ = nullptr;
+		yafaray_ParamMap *yafaray_param_map_ = nullptr;
+		yafaray_ParamMapList *yafaray_param_map_list_ = nullptr;
+		size_t instance_id_current_ = 0;
+		size_t object_id_current_ = 0;
+		size_t material_id_current_ = 0;
 		float time_current_ = 0.f;
 };
 
 // state callbacks:
-void startElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element);
-void startElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
-void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element, const char **attrs);
-void endElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &p, const char *element);
+void startElDocument(XmlParser &p, const char *element, const char **attrs);
+void endElDocument(XmlParser &p, const char *element);
+void startElYafaRayXml(XmlParser &p, const char *element, const char **attrs);
+void endElYafaRayXml(XmlParser &p, const char *element);
+void startElScene(XmlParser &p, const char *element, const char **attrs);
+void endElScene(XmlParser &p, const char *element);
+void startElRenderer(XmlParser &p, const char *element, const char **attrs);
+void endElRenderer(XmlParser &p, const char *element);
+void startElFilm(XmlParser &p, const char *element, const char **attrs);
+void endElFilm(XmlParser &p, const char *element);
+void startElObject(XmlParser &p, const char *element, const char **attrs);
+void endElObject(XmlParser &p, const char *element);
+void startElParammap(XmlParser &p, const char *element, const char **attrs);
+void endElParammap(XmlParser &parser, const char *element);
+void startElParamlist(XmlParser &p, const char *element, const char **attrs);
+void endElParamlist(XmlParser &p, const char *element);
+void startElAddInstanceObject(XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceObject(XmlParser &p, const char *element);
+void startElCreateInstance(XmlParser &p, const char *element, const char **attrs);
+void endElCreateInstance(XmlParser &p, const char *element);
+void startElAddInstanceOfInstance(XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceOfInstance(XmlParser &p, const char *element);
+void startElAddInstanceMatrix(XmlParser &p, const char *element, const char **attrs);
+void endElAddInstanceMatrix(XmlParser &p, const char *element);
+void startElInstanceMatrixTransform(XmlParser &p, const char *element, const char **attrs);
+void endElInstanceMatrixTransform(XmlParser &p, const char *element);
 
-END_YAFARAY_XML
+} //namespace yafaray_xml
 
 #endif // YAFARAY_IMPORT_XML_H

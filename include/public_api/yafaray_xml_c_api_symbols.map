@@ -8,7 +8,7 @@ LIBYAFARAYXML_4.0.0 {
         yafaray_xml_getVersionMinor;
         yafaray_xml_getVersionPatch;
         yafaray_xml_getVersionString;
-        yafaray_xml_deallocateCharPointer;
+        yafaray_xml_destroyCharString;
 
     local:
         *;

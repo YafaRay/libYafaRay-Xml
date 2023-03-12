@@ -24,7 +24,8 @@
 #include <sstream>
 #include <cstring>
 
-BEGIN_YAFARAY_XML
+namespace yafaray_xml
+{
 
 void XmlParser::setLastElementName(const char *element_name)
 {
@@ -45,30 +46,30 @@ void XmlParser::setLastElementNameAttrs(const char **element_attrs)
 	}
 }
 
-void startDocument_global(void *)
+void startDocument(void *)
 {
 	//Empty
 }
 
-void endDocument_global(void *)
+void endDocument(void *)
 {
 	//Empty
 }
 
-void startElement_global(void *user_data, const xmlChar *name, const xmlChar **attrs)
+void startElement(void *user_data, const xmlChar *name, const xmlChar **attrs)
 {
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
-	parser.startElement(parser.getInterface(), (const char *)name, (const char **)attrs);
+	parser.startElement((const char *)name, (const char **)attrs);
 }
 
-void endElement_global(void *user_data, const xmlChar *name)
+void endElement(void *user_data, const xmlChar *name)
 {
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
-	parser.endElement(parser.getInterface(), (const char *)name);
+	parser.endElement((const char *)name);
 }
 
 enum XmlErrorSeverity { Warning, Error, FatalError };
-static void xmlErrorProcessing_global(XmlErrorSeverity xml_error_severity, void *user_data, const char *msg, ...)
+static void xmlErrorProcessing(XmlErrorSeverity xml_error_severity, void *user_data, const char *msg, ...)
 {
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
 	const size_t message_size = 1000;
@@ -89,32 +90,31 @@ static void xmlErrorProcessing_global(XmlErrorSeverity xml_error_severity, void 
 	message_stream << "XMLParser warning: " << std::string(message_buffer);
 	message_stream << " in section '" << parser.getLastSection() << ", level " << parser.currLevel();
 	message_stream << " an element previous to the error: '" << parser.getLastElementName() << "', attrs: { " << parser.getLastElementNameAttrs() << " }";
-	yafaray_Interface_t *yafaray_interface = parser.getInterface();
 	switch(xml_error_severity)
 	{
 		case XmlErrorSeverity::FatalError:
-		case XmlErrorSeverity::Error: yafaray_printError(yafaray_interface, message_stream.str().c_str()); break;
+		case XmlErrorSeverity::Error: yafaray_printError(parser.getLogger(), message_stream.str().c_str()); break;
 		case XmlErrorSeverity::Warning:
-		default: yafaray_printWarning(yafaray_interface, message_stream.str().c_str()); break;
+		default: yafaray_printWarning(parser.getLogger(), message_stream.str().c_str()); break;
 	}
 }
 
-static void myWarning_global(void *user_data, const char *msg, ...)
+static void myWarning(void *user_data, const char *msg, ...)
 {
 	va_list args;
-	xmlErrorProcessing_global(XmlErrorSeverity::Warning, user_data, msg, args);
+	xmlErrorProcessing(XmlErrorSeverity::Warning, user_data, msg, args);
 }
 
-static void myError_global(void *user_data, const char *msg, ...)
+static void myError(void *user_data, const char *msg, ...)
 {
 	va_list args;
-	xmlErrorProcessing_global(XmlErrorSeverity::Error, user_data, msg, args);
+	xmlErrorProcessing(XmlErrorSeverity::Error, user_data, msg, args);
 }
 
-static void myFatalError_global(void *user_data, const char *msg, ...)
+static void myFatalError(void *user_data, const char *msg, ...)
 {
 	va_list args;
-	xmlErrorProcessing_global(XmlErrorSeverity::FatalError, user_data, msg, args);
+	xmlErrorProcessing(XmlErrorSeverity::FatalError, user_data, msg, args);
 	va_end(args);
 }
 
@@ -132,52 +132,59 @@ static xmlSAXHandler my_handler_global =
 	nullptr,
 	nullptr,
 	nullptr,
-	startDocument_global, //  startDocumentSAXFunc startDocument;
-	endDocument_global, //  endDocumentSAXFunc endDocument;
-	startElement_global, //  startElementSAXFunc startElement;
-	endElement_global, //  endElementSAXFunc endElement;
+	startDocument, //  startDocumentSAXFunc startDocument;
+	endDocument, //  endDocumentSAXFunc endDocument;
+	startElement, //  startElementSAXFunc startElement;
+	endElement, //  endElementSAXFunc endElement;
 	nullptr,
 	nullptr, //  charactersSAXFunc characters;
 	nullptr,
 	nullptr,
 	nullptr,
-	myWarning_global,
-	myError_global,
-	myFatalError_global
+	myWarning,
+	myError,
+	myFatalError
 };
 
-bool XmlParser::parseXmlFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path) noexcept
 {
-	XmlParser parser(yafaray_interface);
+	XmlParser parser{yafaray_logger};
 	if(!xml_file_path || xmlSAXUserParseFile(&my_handler_global, &parser, xml_file_path) < 0)
 	{
-		yafaray_printError(yafaray_interface, ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
-		return false;
+		yafaray_printError(parser.getLogger(), ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
+		return {};
 	}
-	return true;
+	else return {true, parser.getScene(), parser.getRenderer(), parser.getFilm()};
 }
 
-bool XmlParser::parseXmlMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size) noexcept
 {
-	const int xml_buffer_size_signed = static_cast<int>(xml_buffer_size);
-	XmlParser parser(yafaray_interface);
-	if(!xml_buffer || xml_buffer_size_signed <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size_signed) < 0)
+	XmlParser parser{yafaray_logger};
+	if(!xml_buffer || xml_buffer_size <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size) < 0)
 	{
-		yafaray_printError(yafaray_interface, "XMLParser: Error parsing a memory buffer");
-		return false;
+		yafaray_printError(parser.getLogger(), "XMLParser: Error parsing a memory buffer");
+		return {};
 	}
-	return true;
+	else return {true, parser.getScene(), parser.getRenderer(), parser.getFilm()};
 }
 
 /*=============================================================
 / parser functions
 =============================================================*/
 
-XmlParser::XmlParser(yafaray_Interface_t *yafaray_interface):
-		yafaray_interface_(yafaray_interface)
+XmlParser::XmlParser(yafaray_Logger *yafaray_logger) :
+	yafaray_logger_{yafaray_logger},
+	yafaray_param_map_{yafaray_createParamMap()},
+	yafaray_param_map_list_{yafaray_createParamMapList()}
 {
 	std::setlocale(LC_NUMERIC, "C"); //To make sure floating points in the xml file are evaluated using the dot and not a comma in some locales
-	pushState(startElDocument_global, endElDocument_global, "");
+	pushState(startElDocument, endElDocument, "");
+}
+
+XmlParser::~XmlParser()
+{
+	yafaray_destroyParamMapList(yafaray_param_map_list_);
+	yafaray_destroyParamMap(yafaray_param_map_);
 }
 
 void XmlParser::pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name)
@@ -198,13 +205,22 @@ void XmlParser::popState()
 	else current_ = nullptr;
 }
 
-/*=============================================================
-/ utility functions...
-=============================================================*/
+void XmlParser::createScene(const char *name)
+{
+	yafaray_scene_ = yafaray_createScene(yafaray_logger_, name, yafaray_param_map_);
+}
 
-inline bool str2Bool_global(const char *s) { return strcmp(s, "true") == 0; }
+void XmlParser::createRenderer(const char *name, yafaray_DisplayConsole display_console)
+{
+	yafaray_renderer_ = yafaray_createRenderer(yafaray_logger_, yafaray_scene_, name, display_console, yafaray_param_map_);
+}
 
-static void parsePoint_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco)
+void XmlParser::createFilm(const char *name)
+{
+	yafaray_film_ = yafaray_createFilm(yafaray_logger_, yafaray_renderer_, name, yafaray_param_map_);
+}
+
+static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco)
 {
 	for(; attrs && attrs[0]; attrs += 2)
 	{
@@ -213,69 +229,88 @@ static void parsePoint_global(yafaray_Interface_t *yafaray_interface, const char
 			has_orco = true;
 			if(attrs[0][1] == 0 || attrs[0][2] != 0)
 			{
-				yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (1)").c_str());
+				yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (1)").c_str());
 				continue; //it is not a single character
 			}
 			switch(attrs[0][1])
 			{
-				case 'x' : op.x_ = atof(attrs[1]); break;
-				case 'y' : op.y_ = atof(attrs[1]); break;
-				case 'z' : op.z_ = atof(attrs[1]); break;
-				default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (2)").c_str());
+				case 'x' : op.x_ = static_cast<float>(atof(attrs[1])); break;
+				case 'y' : op.y_ = static_cast<float>(atof(attrs[1])); break;
+				case 'z' : op.z_ = static_cast<float>(atof(attrs[1])); break;
+				default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (2)").c_str());
 			}
 			continue;
 		}
 		else if(attrs[0][1] != 0)
 		{
-			yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
+			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
 			continue; //it is not a single character
 		}
 		switch(attrs[0][0])
 		{
-			case 'x' : p.x_ = atof(attrs[1]); break;
-			case 'y' : p.y_ = atof(attrs[1]); break;
-			case 'z' : p.z_ = atof(attrs[1]); break;
+			case 'x' : p.x_ = static_cast<float>(atof(attrs[1])); break;
+			case 'y' : p.y_ = static_cast<float>(atof(attrs[1])); break;
+			case 'z' : p.z_ = static_cast<float>(atof(attrs[1])); break;
 			case 't' : time_step = atoi(attrs[1]); break;
-			default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
+			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
 		}
 	}
 }
 
-static bool parseNormal_global(yafaray_Interface_t *yafaray_interface, const char **attrs, Vec3f &n, int &time_step)
+static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &n, int &time_step)
 {
 	int compo_read = 0;
 	for(; attrs && attrs[0]; attrs += 2)
 	{
 		if(attrs[0][1] != 0)
 		{
-			yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
+			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
 			continue; //it is not a single character
 		}
 		switch(attrs[0][0])
 		{
-			case 'x' : n.x_ = atof(attrs[1]); compo_read++; break;
-			case 'y' : n.y_ = atof(attrs[1]); compo_read++; break;
-			case 'z' : n.z_ = atof(attrs[1]); compo_read++; break;
+			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
+			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
+			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
 			case 't' : time_step = atoi(attrs[1]); compo_read++; break;
-			default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
+			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
 		}
 	}
 	return (compo_read == 3);
 }
 
-void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attrs, const char *param_name, XmlParser &parser)
+void parseParam(yafaray_ParamMap *yafaray_param_map, const char **attrs, const char *param_name)
 {
 	if(!attrs || !attrs[0]) return;
 	if(!attrs[2]) // only one attribute => bool, integer or float value
 	{
-		if(!strcmp(attrs[0], "ival")) { const int i = atoi(attrs[1]); yafaray_paramsSetInt(yafaray_interface, param_name, i); return; }
-		else if(!strcmp(attrs[0], "fval")) { const double f = atof(attrs[1]); yafaray_paramsSetFloat(yafaray_interface, param_name, f); return; }
-		else if(!strcmp(attrs[0], "bval")) { const bool b = str2Bool_global(attrs[1]); yafaray_paramsSetBool(yafaray_interface, param_name, static_cast<yafaray_bool_t>(b)); return; }
-		else if(!strcmp(attrs[0], "sval")) { yafaray_paramsSetString(yafaray_interface, param_name, attrs[1]); return; }
+		if(!strcmp(attrs[0], "ival"))
+		{
+			const int i = atoi(attrs[1]);
+			yafaray_setParamMapInt(yafaray_param_map, param_name, i);
+			return;
+		}
+		else if(!strcmp(attrs[0], "fval"))
+		{
+			const double f = atof(attrs[1]);
+			yafaray_setParamMapFloat(yafaray_param_map, param_name, f);
+			return;
+		}
+		else if(!strcmp(attrs[0], "bval"))
+		{
+			const bool b = strcmp(attrs[1], "true") == 0;
+			yafaray_setParamMapBool(yafaray_param_map, param_name, static_cast<yafaray_Bool>(b));
+			return;
+		}
+		else if(!strcmp(attrs[0], "sval"))
+		{
+			yafaray_setParamMapString(yafaray_param_map, param_name, attrs[1]);
+			return;
+		}
 	}
 	Rgba c(0.f);
 	Vec3f v(0, 0, 0);
-	float matrix[4][4];
+	double matrix[4][4];
 	enum class ParameterType : int { None, Vector, Color, Matrix } type = ParameterType::None;
 	for(int n = 0; attrs[n]; ++n)
 	{
@@ -283,14 +318,14 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 		{
 			switch(attrs[n][0])
 			{
-				case 'x': v.x_ = atof(attrs[n + 1]); type = ParameterType::Vector; break;
-				case 'y': v.y_ = atof(attrs[n + 1]); type = ParameterType::Vector; break;
-				case 'z': v.z_ = atof(attrs[n + 1]); type = ParameterType::Vector; break;
+				case 'x': v.x_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Vector; break;
+				case 'y': v.y_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Vector; break;
+				case 'z': v.z_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Vector; break;
 
-				case 'r': c.r_ = atof(attrs[n + 1]); type = ParameterType::Color; break;
-				case 'g': c.g_ = atof(attrs[n + 1]); type = ParameterType::Color; break;
-				case 'b': c.b_ = atof(attrs[n + 1]); type = ParameterType::Color; break;
-				case 'a': c.a_ = atof(attrs[n + 1]); type = ParameterType::Color; break;
+				case 'r': c.r_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Color; break;
+				case 'g': c.g_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Color; break;
+				case 'b': c.b_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Color; break;
+				case 'a': c.a_ = static_cast<float>(atof(attrs[n + 1])); type = ParameterType::Color; break;
 			}
 		}
 		else if(attrs[n][3] == '\0' && attrs[n][0] == 'm' && attrs[n][1] >= '0' && attrs[n][1] <= '3' && attrs[n][2] >= '0' && attrs[n][2] <= '3') //"mij" where i and j are between 0 and 3 (inclusive)
@@ -302,11 +337,11 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 		}
 	}
 
-	if(type == ParameterType::Vector) yafaray_paramsSetVector(yafaray_interface, param_name, v.x_, v.y_, v.z_);
-	else if(type == ParameterType::Matrix) yafaray_paramsSetMatrixArray(yafaray_interface, param_name, reinterpret_cast<const float *>(matrix), static_cast<yafaray_bool_t>(false));
+	if(type == ParameterType::Vector) yafaray_setParamMapVector(yafaray_param_map, param_name, v.x_, v.y_, v.z_);
+	else if(type == ParameterType::Matrix) yafaray_setParamMapMatrixArray(yafaray_param_map, param_name, reinterpret_cast<const double *>(matrix), static_cast<yafaray_Bool>(false));
 	else if(type == ParameterType::Color)
 	{
-		yafaray_paramsSetColor(yafaray_interface, param_name, c.r_, c.g_, c.b_, c.a_);
+		yafaray_setParamMapColor(yafaray_param_map, param_name, c.r_, c.g_, c.b_, c.a_);
 	}
 }
 
@@ -314,29 +349,30 @@ void parseParam_global(yafaray_Interface_t *yafaray_interface, const char **attr
 / start- and endElement callbacks for the different states
 =============================================================*/
 
-void endElDummy_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *)
+void endElDummy(XmlParser &parser, const char *)
 {
 	parser.popState();
 }
 
-void startElDummy_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *, const char **)
+void startElDummy(XmlParser &parser, const char *, const char **)
 {
-	parser.pushState(startElDummy_global, endElDummy_global, "___no_name___");
+	parser.pushState(startElDummy, endElDummy, "___no_name___");
 }
 
 class Version final
 {
 	public:
 		explicit Version(const std::string &version_string);
-		std::string getString() const { return std::to_string(major) + "." + std::to_string(minor) + "." + std::to_string(patch); }
-		int getMajor() const { return major; }
-		int getMinor() const { return minor; }
-		int getPatch() const { return patch; }
-		bool isValid() const { return major == 0 && minor == 0 && patch == 0; }
+		[[nodiscard]] std::string getString() const { return std::to_string(major_) + "." + std::to_string(minor_) + "." + std::to_string(patch_); }
+		[[nodiscard]] int getMajor() const { return major_; }
+		[[nodiscard]] int getMinor() const { return minor_; }
+		[[nodiscard]] int getPatch() const { return patch_; }
+		[[nodiscard]] bool isValid() const { return major_ == 0 && minor_ == 0 && patch_ == 0; }
+
 	private:
-		int major = 0;
-		int minor = 0;
-		int patch = 0;
+		int major_ = 0;
+		int minor_ = 0;
+		int patch_ = 0;
 };
 
 Version::Version(const std::string &version_string)
@@ -345,13 +381,13 @@ Version::Version(const std::string &version_string)
 	size_t pos_first_dot = version_string.find('.');
 	if(pos_first_dot < version_string.size())
 	{
-		major = std::stoi(version_string.substr(0, pos_first_dot));
+		major_ = std::stoi(version_string.substr(0, pos_first_dot));
 		std::string remaining_string = version_string.substr(pos_first_dot + 1);
 		size_t pos_second_dot = remaining_string.find('.');
 		if(pos_second_dot < remaining_string.size())
 		{
-			minor = std::stoi(remaining_string.substr(0, pos_second_dot));
-			patch = std::stoi(remaining_string.substr(pos_second_dot + 1));
+			minor_ = std::stoi(remaining_string.substr(0, pos_second_dot));
+			patch_ = std::stoi(remaining_string.substr(pos_second_dot + 1));
 		}
 		else error = true;
 	}
@@ -359,13 +395,13 @@ Version::Version(const std::string &version_string)
 
 	if(error)
 	{
-		major = 0;
-		minor = 0;
-		patch = 0;
+		major_ = 0;
+		minor_ = 0;
+		patch_ = 0;
 	}
 }
 
-void startElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("Document");
 	parser.setLastElementName(element);
@@ -375,7 +411,7 @@ void startElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &p
 	{
 		if(!attrs || !attrs[0])
 		{
-			yafaray_printError(yafaray_interface, "XMLParser: No attributes for yafaray_xml element, cannot check xml format version");
+			yafaray_printError(parser.getLogger(), "XMLParser: No attributes for yafaray_xml element, cannot check xml format version");
 		}
 		else if(!strcmp(attrs[0], "format_version"))
 		{
@@ -383,75 +419,103 @@ void startElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &p
 			{
 				const std::string format_version_string = attrs[1];
 				Version xml_version(format_version_string);
-				const int lib_version_major = buildinfo::getVersionMajor();
-				const int lib_version_minor = buildinfo::getVersionMinor();
-				const int lib_version_patch = buildinfo::getVersionPatch();
-				yafaray_printVerbose(yafaray_interface, ("XMLParser: The XML format version is: '" + xml_version.getString() + "'").c_str());
+				const int lib_version_major = build_info::getVersionMajor();
+				const int lib_version_minor = build_info::getVersionMinor();
+				const int lib_version_patch = build_info::getVersionPatch();
+				yafaray_printVerbose(parser.getLogger(), ("XMLParser: The XML format version is: '" + xml_version.getString() + "'").c_str());
 				if(xml_version.isValid())
 				{
-					yafaray_printError(yafaray_interface, ("XMLParser: The XML format version '" + format_version_string + "' is malformed and cannot be checked.").c_str());
+					yafaray_printError(parser.getLogger(), ("XMLParser: The XML format version '" + format_version_string + "' is malformed and cannot be checked.").c_str());
 				}
 				else if((xml_version.getMajor() > lib_version_major) ||
 						(xml_version.getMajor() == lib_version_major && xml_version.getMinor() > lib_version_minor) ||
 						(xml_version.getMajor() == lib_version_major && xml_version.getMinor() == lib_version_minor && xml_version.getPatch() > lib_version_patch))
 				{
-					yafaray_printError(yafaray_interface, ("XMLParser: The XML format version '" + format_version_string + "' is higher than the libYafaRay-Xml version '" + buildinfo::getVersionString() + "'").c_str());
+					yafaray_printError(parser.getLogger(), ("XMLParser: The XML format version '" + format_version_string + "' is higher than the libYafaRay-Xml version '" + build_info::getVersionString() + "'").c_str());
 				}
 			}
-			else yafaray_printError(yafaray_interface, "XMLParser: No format version specified for format_version attribute in yafaray_xml element, cannot check xml format version");
+			else yafaray_printError(parser.getLogger(), "XMLParser: No format version specified for format_version attribute in yafaray_xml element, cannot check xml format version");
 		}
 		else
 		{
-			yafaray_printWarning(yafaray_interface, "XMLParser: Attribute for yafaray_xml element does not match 'format_version'!");
+			yafaray_printWarning(parser.getLogger(), "XMLParser: Attribute for yafaray_xml element does not match 'format_version'!");
 			return;
 		}
-		parser.pushState(startElYafaRayXml_global, endElYafaRayXml_global, "___no_name___");
+		parser.pushState(startElYafaRayXml, endElYafaRayXml, "___no_name___");
 	}
-	else yafaray_printWarning(yafaray_interface, ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_xml' was expected, skipping...").c_str());
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_xml' was expected, skipping...").c_str());
 }
 
-void endElDocument_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *)
+void endElDocument(XmlParser &parser, const char *)
 {
-	yafaray_printVerbose(yafaray_interface, "XMLParser: Finished document");
+	yafaray_printVerbose(parser.getLogger(), "XMLParser: Finished document");
 }
 
 // scene-state, i.e. expect only primary elements
 // such as light, material, texture, object, integrator, render...
 
-void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElYafaRayXml(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("YafarayXml");
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
 
-	if(!strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "camera") || !strcmp(element, "volumeregion") || !strcmp(element, "logging_badge") || !strcmp(element, "output") || !strcmp(element, "render_view") || !strcmp(element, "image"))
+	if(!strcmp(element, "scene"))
+	{
+		parser.pushState(startElScene, endElScene, "___no_name___");
+	}
+	else if(!strcmp(element, "renderer"))
+	{
+		parser.pushState(startElRenderer, endElRenderer, "___no_name___");
+	}
+	else if(!strcmp(element, "film"))
+	{
+		parser.pushState(startElFilm, endElFilm, "___no_name___");
+	}
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized YafaRayXml element '" + std::string(element) + "'").c_str());
+}
+
+void endElYafaRayXml(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "yafaray_xml") == 0)
+	{
+		parser.popState();
+	}
+}
+
+void startElScene(XmlParser &parser, const char *element, const char **attrs)
+{
+	parser.setLastSection("Scene");
+	parser.setLastElementName(element);
+	parser.setLastElementNameAttrs(attrs);
+
+	if(!strcmp(element, "scene_parameters") || !strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "volumeregion") || !strcmp(element, "image") || !strcmp(element, "light"))
 	{
 		std::string element_name;
 		if(!attrs || !attrs[0])
 		{
-			yafaray_printWarning(yafaray_interface, ("XMLParser: No attributes for scene element '" + element_name + "'!").c_str());
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
 			return;
 		}
 		else if(!strcmp(attrs[0], "name")) element_name = attrs[1];
 		else
 		{
-			yafaray_printWarning(yafaray_interface, ("XMLParser: Attribute for scene element '" + element_name + "does not match 'name'!").c_str());
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
 			return;
 		}
-		parser.pushState(startElParammap_global, endElParammap_global, element_name);
+		parser.pushState(startElParammap, endElParammap, element_name);
 	}
-	else if(!strcmp(element, "layer") || !strcmp(element, "scene") || !strcmp(element, "render") || !strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator") || !strcmp(element, "background"))
+	else if(!strcmp(element, "background"))
 	{
-		parser.pushState(startElParammap_global, endElParammap_global, "___no_name___");
+		parser.pushState(startElParammap, endElParammap, "___no_name___");
 	}
 	else if(!strcmp(element, "object"))
 	{
-		const std::string element_name = "Object_" + std::to_string(yafaray_getNextFreeId(yafaray_interface));
-		parser.pushState(startElObject_global, endElObject_global, element_name);
+		parser.pushState(startElObject, endElObject, "");
 	}
 	else if(!strcmp(element, "smooth"))
 	{
-		float angle = 181;
+		double angle = 181.0;
 		std::string element_name;
 		for(int n = 0; attrs[n]; ++n)
 		{
@@ -460,15 +524,17 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 		}
 		//not optimal to take ID blind...
 		//yafaray_startObjects();
-		bool success = yafaray_smoothMesh(yafaray_interface, element_name.c_str(), angle);
-		if(!success) yafaray_printWarning(yafaray_interface, ("XMLParser: Couldn't smooth object with object_name='" + element_name + "', angle = " + std::to_string(angle)).c_str());
+		size_t object_id;
+		yafaray_getObjectId(parser.getScene(), &object_id, element_name.c_str());
+		bool success = yafaray_smoothObjectMesh(parser.getScene(), object_id, angle);
+		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with object_name='" + element_name + "', angle = " + std::to_string(angle)).c_str());
 		//yafaray_endObjects();
-		parser.pushState(startElDummy_global, endElDummy_global, "___no_name___");
+		parser.pushState(startElDummy, endElDummy, "___no_name___");
 	}
 	else if(!strcmp(element, "createInstance"))
 	{
-		parser.setInstanceIdCurrent(yafaray_createInstance(yafaray_interface));
-		parser.pushState(nullptr, endElCreateInstance_global, "");
+		parser.setInstanceIdCurrent(yafaray_createInstance(parser.getScene()));
+		parser.pushState(nullptr, endElCreateInstance, "");
 	}
 	else if(!strcmp(element, "addInstanceObject"))
 	{
@@ -484,8 +550,10 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 				base_object_name = attrs[n + 1];
 			}
 		}
-		yafaray_addInstanceObject(yafaray_interface, parser.getInstanceIdCurrent(), base_object_name.c_str());
-		parser.pushState(nullptr, endElAddInstanceObject_global, "");
+		size_t object_id;
+		yafaray_getObjectId(parser.getScene(), &object_id, base_object_name.c_str());
+		yafaray_addInstanceObject(parser.getScene(), parser.getInstanceIdCurrent(), object_id);
+		parser.pushState(nullptr, endElAddInstanceObject, "");
 	}
 	else if(!strcmp(element, "addInstanceOfInstance"))
 	{
@@ -495,15 +563,15 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 		{
 			if(!strcmp(attrs[n], "instance_id"))
 			{
-				base_instance_id = atoi(attrs[n + 1]);
+				instance_id = atoi(attrs[n + 1]);
 			}
 			else if(!strcmp(attrs[n], "base_instance_id"))
 			{
 				base_instance_id = atoi(attrs[n + 1]);
 			}
 		}
-		yafaray_addInstanceOfInstance(yafaray_interface, instance_id, base_instance_id);
-		parser.pushState(nullptr, endElAddInstanceOfInstance_global, "");
+		yafaray_addInstanceOfInstance(parser.getScene(), instance_id, base_instance_id);
+		parser.pushState(nullptr, endElAddInstanceOfInstance, "");
 	}
 	else if(!strcmp(element, "addInstanceMatrix"))
 	{
@@ -513,18 +581,90 @@ void startElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser 
 			{
 				parser.setInstanceIdCurrent(atoi(attrs[n + 1]));
 			}
-			else if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(atof(attrs[n + 1]));
+			else if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(static_cast<float>(atof(attrs[n + 1])));
 		}
-		parser.pushState(startElAddInstanceMatrix_global, endElAddInstanceMatrix_global, "");
+		parser.pushState(startElAddInstanceMatrix, endElAddInstanceMatrix, "");
 	}
-	else yafaray_printWarning(yafaray_interface, ("XMLParser: Skipping unrecognized scene element '" + std::string(element) + "'").c_str());
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
 
-void endElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElScene(XmlParser &parser, const char *element)
 {
-	if(strcmp(element, "yafaray_xml") != 0)
-		yafaray_printWarning(yafaray_interface, "XMLParser: expected </yafaray_xml> tag!");
-	else
+	if(strcmp(element, "scene") == 0)
+	{
+		parser.popState();
+	}
+}
+
+void startElRenderer(XmlParser &parser, const char *element, const char **attrs)
+{
+	parser.setLastSection("Renderer");
+	parser.setLastElementName(element);
+	parser.setLastElementNameAttrs(attrs);
+
+	if(!strcmp(element, "renderer_parameters"))
+	{
+		std::string element_name;
+		if(!attrs || !attrs[0])
+		{
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
+			return;
+		}
+		else if(!strcmp(attrs[0], "name")) element_name = attrs[1];
+		else
+		{
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
+			return;
+		}
+		parser.pushState(startElParammap, endElParammap, element_name);
+	}
+	else if(!strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
+	{
+		parser.pushState(startElParammap, endElParammap, "___no_name___");
+	}
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
+}
+
+void endElRenderer(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "renderer") == 0)
+	{
+		parser.popState();
+	}
+}
+
+void startElFilm(XmlParser &parser, const char *element, const char **attrs)
+{
+	parser.setLastSection("Film");
+	parser.setLastElementName(element);
+	parser.setLastElementNameAttrs(attrs);
+
+	if(!strcmp(element, "film_parameters") || !strcmp(element, "camera") || !strcmp(element, "output"))
+	{
+		std::string element_name;
+		if(!attrs || !attrs[0])
+		{
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
+			return;
+		}
+		else if(!strcmp(attrs[0], "name")) element_name = attrs[1];
+		else
+		{
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
+			return;
+		}
+		parser.pushState(startElParammap, endElParammap, element_name);
+	}
+	else if(!strcmp(element, "layer"))
+	{
+		parser.pushState(startElParammap, endElParammap, "___no_name___");
+	}
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
+}
+
+void endElFilm(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "film") == 0)
 	{
 		parser.popState();
 	}
@@ -532,7 +672,7 @@ void endElYafaRayXml_global(yafaray_Interface_t *yafaray_interface, XmlParser &p
 
 // object-state, i.e. expect only points (vertices), faces and material settings
 // since we're supposed to be inside an object block, exit state on "object" element
-void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElObject(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("Object");
 	parser.setLastElementName(element);
@@ -544,16 +684,16 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 		Vec3f op{0.f, 0.f, 0.f};
 		int time_step = 0;
 		bool has_orco = false;
-		parsePoint_global(yafaray_interface, attrs, p, op, time_step, has_orco);
-		if(has_orco) yafaray_addVertexWithOrcoTimeStep(yafaray_interface, p.x_, p.y_, p.z_, op.x_, op.y_, op.z_, time_step);
-		else yafaray_addVertexTimeStep(yafaray_interface, p.x_, p.y_, p.z_, time_step);
+		parsePoint(parser.getLogger(), attrs, p, op, time_step, has_orco);
+		if(has_orco) yafaray_addVertexWithOrcoTimeStep(parser.getScene(), parser.getObjectIdCurrent(), p.x_, p.y_, p.z_, op.x_, op.y_, op.z_, time_step);
+		else yafaray_addVertexTimeStep(parser.getScene(), parser.getObjectIdCurrent(), p.x_, p.y_, p.z_, time_step);
 	}
 	else if(!strcmp(element, "n"))
 	{
 		Vec3f n(0.0, 0.0, 0.0);
 		int time_step = 0;
-		if(!parseNormal_global(yafaray_interface, attrs, n, time_step)) return;
-		yafaray_addNormalTimeStep(yafaray_interface, n.x_, n.y_, n.z_, time_step);
+		if(!parseNormal(parser.getLogger(), attrs, n, time_step)) return;
+		yafaray_addNormalTimeStep(parser.getScene(), parser.getObjectIdCurrent(), n.x_, n.y_, n.z_, time_step);
 	}
 	else if(!strcmp(element, "f"))
 	{
@@ -569,7 +709,7 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 				case 'b' :
 				case 'c' :
 				case 'd' : vertices_indices.push_back(atoi(attrs[1])); break;
-				default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute '" + attribute + "' in face").c_str());
+				default: yafaray_printWarning(parser.getLogger(), ("XMLParser: Ignored wrong attribute '" + attribute + "' in face").c_str());
 			}
 			else
 			{
@@ -578,13 +718,13 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 		}
 		if(vertices_indices.size() == 3)
 		{
-			if(uv_indices.empty()) yafaray_addTriangle(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2]);
-			else yafaray_addTriangleWithUv(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], uv_indices[0], uv_indices[1], uv_indices[2]);
+			if(uv_indices.empty()) yafaray_addTriangle(parser.getScene(), parser.getObjectIdCurrent(), vertices_indices[0], vertices_indices[1], vertices_indices[2], parser.getMaterialIdCurrent());
+			else yafaray_addTriangleWithUv(parser.getScene(), parser.getObjectIdCurrent(), vertices_indices[0], vertices_indices[1], vertices_indices[2], uv_indices[0], uv_indices[1], uv_indices[2], parser.getMaterialIdCurrent());
 		}
 		else if(vertices_indices.size() == 4)
 		{
-			if(uv_indices.empty()) yafaray_addQuad(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3]);
-			else yafaray_addQuadWithUv(yafaray_interface, vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3], uv_indices[0], uv_indices[1], uv_indices[2], uv_indices[3]);
+			if(uv_indices.empty()) yafaray_addQuad(parser.getScene(), parser.getObjectIdCurrent(), vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3], parser.getMaterialIdCurrent());
+			else yafaray_addQuadWithUv(parser.getScene(), parser.getObjectIdCurrent(), vertices_indices[0], vertices_indices[1], vertices_indices[2], vertices_indices[3], uv_indices[0], uv_indices[1], uv_indices[2], uv_indices[3], parser.getMaterialIdCurrent());
 		}
 	}
 	else if(!strcmp(element, "uv"))
@@ -594,14 +734,14 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 		{
 			switch(attrs[0][0])
 			{
-				case 'u': u = atof(attrs[1]);
+				case 'u': u = static_cast<float>(atof(attrs[1]));
 					/*if(!(isValid(u)))
 					{
 						std::cout << std::scientific << std::setprecision(6) << "XMLParser: invalid value in \"" << element << "\" xml entry: " << attrs[0] << "=" << attrs[1] << ". Replacing with 0.0." << std::endl;
 						u = 0.f;
 					}*/
 					break;
-				case 'v': v = atof(attrs[1]);
+				case 'v': v = static_cast<float>(atof(attrs[1]));
 				/*	if(!(math::isValid(v)))
 					{
 						std::cout << std::scientific << std::setprecision(6) << "XMLParser: invalid value in \"" << element << "\" xml entry: " << attrs[0] << "=" << attrs[1] << ". Replacing with 0.0." << std::endl;
@@ -609,38 +749,40 @@ void startElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &par
 					}*/
 					break;
 
-				default: yafaray_printWarning(yafaray_interface, ("XMLParser: Ignored wrong attribute '" + std::string(attrs[0]) + "' in uv").c_str());
+				default: yafaray_printWarning(parser.getLogger(), ("XMLParser: Ignored wrong attribute '" + std::string(attrs[0]) + "' in uv").c_str());
 			}
 		}
-		yafaray_addUv(yafaray_interface, u, v);
+		yafaray_addUv(parser.getScene(), parser.getObjectIdCurrent(), u, v);
 	}
 	else if(!strcmp(element, "set_material"))
 	{
 		std::string mat_name(attrs[1]);
-		yafaray_setCurrentMaterial(yafaray_interface, mat_name.c_str());
+		size_t material_id;
+		yafaray_getMaterialId(parser.getScene(), &material_id, mat_name.c_str());
+		parser.setMaterialIdCurrent(material_id);
 	}
 	else if(!strcmp(element, "object_parameters"))
 	{
 		std::string element_name;
 		if(!strcmp(attrs[0], "name")) element_name = attrs[1];
-		parser.pushState(startElParammap_global, endElParammap_global, element_name);
+		parser.pushState(startElParammap, endElParammap, element_name);
 	}
 }
 
-void endElObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElObject(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "object"))
 	{
-		//if(!yafaray_endGeometry(yafaray_interface)) std::cout << "XMLParser: Invalid scene state on endGeometry()!" << std::endl; //FIXME?
+		yafaray_initObject(parser.getScene(), parser.getObjectIdCurrent(), parser.getMaterialIdCurrent());
 		parser.popState();
 	}
 }
 
 // read a parameter map; take any tag as parameter name
 // again, exit when end-element is on of the elements that caused to enter state
-// depending on exit element, create appropriate scene element
+// depending on exit element, create appropriate element
 
-void startElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElParammap(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("Params map");
 	parser.setLastElementName(element);
@@ -648,66 +790,77 @@ void startElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &p
 	// support for lists of paramMaps
 	if(!strcmp(element, "list_element"))
 	{
-		yafaray_paramsPushList(yafaray_interface);
-		parser.pushState(startElParamlist_global, endElParamlist_global, "___no_name___");
+		parser.pushState(startElParamlist, endElParamlist, "___no_name___");
 		return;
 	}
-	parseParam_global(yafaray_interface, attrs, element, parser);
+	parseParam(parser.getParamMap(), attrs, element);
 }
 
-void endElParammap_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElParammap(XmlParser &parser, const char *element)
 {
-	//yafaray_printDebug(yafaray_interface, ("##### endElParammap_global, element='" + std::string(element) + "', element_name='" + std::string(parser.stateElementName()) + "'").c_str());
+	//yafaray_printDebug(parser.getLogger(), parser.getScene(), parser.getRenderer(), parser.getFilm(), ("##### endElParammap, element='" + std::string(element) + "', element_name='" + std::string(parser.stateElementName()) + "'").c_str());
 	const bool exit_state = (parser.currLevel() == parser.stateLevel());
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
 		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0 && strcmp(element, "background") != 0 && strcmp(element, "surface_integrator") != 0 && strcmp(element, "volume_integrator") != 0)
 		{
-			yafaray_printWarning(yafaray_interface, ("XMLParser: No name for scene element '" + std::string(element) + "' available!").c_str());
+			yafaray_printWarning(parser.getLogger(), ("XMLParser: No name for element '" + std::string(element) + "' available!").c_str());
 		}
 		else
 		{
-			if(!strcmp(element, "scene")) yafaray_createScene(yafaray_interface);
-			else if(!strcmp(element, "material")) yafaray_createMaterial(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "surface_integrator")) yafaray_defineSurfaceIntegrator(yafaray_interface);
-			else if(!strcmp(element, "volume_integrator")) yafaray_defineVolumeIntegrator(yafaray_interface);
-			else if(!strcmp(element, "light")) yafaray_createLight(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "image")) yafaray_createImage(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "texture")) yafaray_createTexture(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "camera")) yafaray_createCamera(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "background")) yafaray_defineBackground(yafaray_interface);
-			else if(!strcmp(element, "object_parameters")) yafaray_createObject(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "volumeregion")) yafaray_createVolumeRegion(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "layer")) { yafaray_defineLayer(yafaray_interface); }
-			else if(!strcmp(element, "output")) yafaray_createOutput(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "render_view")) yafaray_createRenderView(yafaray_interface, element_name.c_str());
-			else if(!strcmp(element, "render")) yafaray_setupRender(yafaray_interface);
-			else yafaray_printWarning(yafaray_interface, ("XMLParser: Unexpected end-tag of scene element '" + std::string(element) + "'!").c_str());
+			if(!strcmp(element, "scene_parameters")) parser.createScene(element_name.c_str());
+			else if(!strcmp(element, "renderer_parameters")) parser.createRenderer(element_name.c_str(), YAFARAY_DISPLAY_CONSOLE_NORMAL); //FIXME!
+			else if(!strcmp(element, "film_parameters")) parser.createFilm(element_name.c_str());
+			else if(!strcmp(element, "material"))
+			{
+				size_t material_id;
+				yafaray_createMaterial(parser.getScene(), &material_id, element_name.c_str(), parser.getParamMap(), parser.getParamMapList());
+				parser.setMaterialIdCurrent(material_id);
+			}
+			else if(!strcmp(element, "surface_integrator")) yafaray_defineSurfaceIntegrator(parser.getRenderer(), parser.getParamMap());
+			else if(!strcmp(element, "volume_integrator")) yafaray_defineVolumeIntegrator(parser.getRenderer(), parser.getScene(), parser.getParamMap());
+			else if(!strcmp(element, "light")) yafaray_createLight(parser.getScene(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "image")) yafaray_createImage(parser.getScene(), element_name.c_str(), nullptr, parser.getParamMap());
+			else if(!strcmp(element, "texture")) yafaray_createTexture(parser.getScene(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "background")) yafaray_defineBackground(parser.getScene(), parser.getParamMap());
+			else if(!strcmp(element, "object_parameters"))
+			{
+				size_t object_id;
+				yafaray_createObject(parser.getScene(), &object_id, element_name.c_str(), parser.getParamMap());
+				parser.setObjectIdCurrent(object_id);
+			}
+			else if(!strcmp(element, "volumeregion")) yafaray_createVolumeRegion(parser.getScene(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "layer")) { yafaray_defineLayer(parser.getFilm(), parser.getParamMap()); }
+			else if(!strcmp(element, "output")) yafaray_createOutput(parser.getFilm(), element_name.c_str(), parser.getParamMap());
+			else yafaray_printWarning(parser.getLogger(), ("XMLParser: Unexpected end-tag of element '" + std::string(element) + "'!").c_str());
 		}
 		parser.popState();
-		yafaray_paramsClearAll(yafaray_interface);
+		parser.clearParamMap();
+		parser.clearParamMapList();
 	}
 }
 
-void startElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElParamlist(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("Params list");
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
-	parseParam_global(yafaray_interface, attrs, element, parser);
+	parseParam(parser.getParamMap(), attrs, element);
 }
 
-void endElParamlist_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElParamlist(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "list_element"))
 	{
-		yafaray_paramsEndList(yafaray_interface);
+		parser.addParamMapToList();
+		parser.clearParamMap();
 		parser.popState();
 	}
 }
 
-void endElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElCreateInstance(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "createInstance"))
 	{
@@ -715,7 +868,7 @@ void endElCreateInstance_global(yafaray_Interface_t *yafaray_interface, XmlParse
 	}
 }
 
-void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElAddInstanceObject(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "addInstanceObject"))
 	{
@@ -723,7 +876,7 @@ void endElAddInstanceObject_global(yafaray_Interface_t *yafaray_interface, XmlPa
 	}
 }
 
-void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElAddInstanceOfInstance(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "addInstanceOfInstance"))
 	{
@@ -731,7 +884,7 @@ void endElAddInstanceOfInstance_global(yafaray_Interface_t *yafaray_interface, X
 	}
 }
 
-void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
+void startElAddInstanceMatrix(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("AddInstanceMatrix");
 	parser.setLastElementName(element);
@@ -739,7 +892,7 @@ void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, Xml
 
 	if(!strcmp(element, "transform"))
 	{
-		float m[4 * 4];
+		double m[4 * 4];
 		for(int n = 0; attrs[n]; ++n)
 		{
 			if(attrs[n][3] == '\0' && attrs[n][0] == 'm' && attrs[n][1] >= '0' && attrs[n][1] <= '3' && attrs[n][2] >= '0' && attrs[n][2] <= '3') //"mij" where i and j are between 0 and 3 (inclusive)
@@ -749,11 +902,11 @@ void startElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, Xml
 				m[4 * i + j] = atof(attrs[n + 1]);
 			}
 		}
-		yafaray_addInstanceMatrixArray(yafaray_interface, parser.getInstanceIdCurrent(), m, parser.getTimeCurrent());
+		yafaray_addInstanceMatrixArray(parser.getScene(), parser.getInstanceIdCurrent(), m, parser.getTimeCurrent());
 	}
 }
 
-void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
+void endElAddInstanceMatrix(XmlParser &parser, const char *element)
 {
 	if(!strcmp(element, "addInstanceMatrix"))
 	{
@@ -761,19 +914,4 @@ void endElAddInstanceMatrix_global(yafaray_Interface_t *yafaray_interface, XmlPa
 	}
 }
 
-void startElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element, const char **attrs)
-{
-	parser.setLastSection("InstanceMatrixTransform");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
-}
-
-void endElInstanceMatrixTransform_global(yafaray_Interface_t *yafaray_interface, XmlParser &parser, const char *element)
-{
-	if(!strcmp(element, "transform"))
-	{
-		parser.popState();
-	}
-}
-
-END_YAFARAY_XML
+} //namespace yafaray_xml

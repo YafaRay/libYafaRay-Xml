@@ -1,6 +1,6 @@
 add_library(libyafaray4_xml)
 set_target_properties(libyafaray4_xml PROPERTIES PREFIX "" VERSION 4.0.0 SOVERSION 4)
-set_target_properties(libyafaray4_xml PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
+set_target_properties(libyafaray4_xml PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON CXX_EXTENSIONS OFF)
 set_target_properties(libyafaray4_xml PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
 target_include_directories(libyafaray4_xml PRIVATE ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR}/include)
 target_include_directories(libyafaray4_xml INTERFACE $<INSTALL_INTERFACE:include>)

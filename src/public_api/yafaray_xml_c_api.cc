@@ -21,14 +21,22 @@
 #include "common/version_build_info.h"
 #include <cstring>
 
-bool yafaray_xml_ParseFile(yafaray_Interface_t *yafaray_interface, const char *xml_file_path)
+bool yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_file_path)
 {
-	return yafaray_xml::XmlParser::parseXmlFile(yafaray_interface, xml_file_path);
+	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlFile(yafaray_logger, xml_file_path)};
+	if(yafaray_scene) *yafaray_scene = scene;
+	if(yafaray_renderer) *yafaray_renderer = renderer;
+	if(yafaray_film) *yafaray_film = film;
+	return result;
 }
 
-bool yafaray_xml_ParseMemory(yafaray_Interface_t *yafaray_interface, const char *xml_buffer, unsigned int xml_buffer_size)
+bool yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_Renderer **yafaray_renderer, yafaray_Film **yafaray_film, const char *xml_buffer, int xml_buffer_size)
 {
-	return yafaray_xml::XmlParser::parseXmlMemory(yafaray_interface, xml_buffer, xml_buffer_size);
+	auto [result, scene, renderer, film]{yafaray_xml::XmlParser::parseXmlMemory(yafaray_logger, xml_buffer, xml_buffer_size)};
+	if(yafaray_scene) *yafaray_scene = scene;
+	if(yafaray_renderer) *yafaray_renderer = renderer;
+	if(yafaray_film) *yafaray_film = film;
+	return result;
 }
 
 char *createCString(const std::string &std_string)
@@ -41,14 +49,14 @@ char *createCString(const std::string &std_string)
 
 char *yafaray_xml_getVersionString()
 {
-	return createCString(yafaray_xml::buildinfo::getVersionString());
+	return createCString(yafaray_xml::build_info::getVersionString());
 }
 
-int yafaray_xml_getVersionMajor() { return yafaray_xml::buildinfo::getVersionMajor(); }
-int yafaray_xml_getVersionMinor() { return yafaray_xml::buildinfo::getVersionMinor(); }
-int yafaray_xml_getVersionPatch() { return yafaray_xml::buildinfo::getVersionPatch(); }
+int yafaray_xml_getVersionMajor() { return yafaray_xml::build_info::getVersionMajor(); }
+int yafaray_xml_getVersionMinor() { return yafaray_xml::build_info::getVersionMinor(); }
+int yafaray_xml_getVersionPatch() { return yafaray_xml::build_info::getVersionPatch(); }
 
-void yafaray_xml_deallocateCharPointer(char *string_pointer_to_deallocate)
+void yafaray_xml_destroyCharString(char *string)
 {
-	delete[] string_pointer_to_deallocate;
+	delete[] string;
 }

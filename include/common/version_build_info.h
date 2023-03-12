@@ -22,13 +22,10 @@
 #ifndef YAFARAY_XML_VERSION_BUILD_INFO_H
 #define YAFARAY_XML_VERSION_BUILD_INFO_H
 
-#include "yafaray_xml_common.h"
 #include <string>
 #include <vector>
 
-BEGIN_YAFARAY_XML
-
-namespace buildinfo
+namespace yafaray_xml::build_info
 {
 	std::string getVersionString();
 	std::string getVersionDescription();
@@ -54,8 +51,6 @@ namespace buildinfo
 	std::string getBuildOptions();
 	std::string getBuildFlags();
 	std::vector<std::string> getAllBuildDetails();
-}
-
-END_YAFARAY_XML
+} //namespace yafaray_xml::build_info
 
 #endif //YAFARAY_XML_VERSION_BUILD_INFO_H
