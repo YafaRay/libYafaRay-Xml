@@ -19,8 +19,8 @@
  *      Foundation,Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef YAFARAY_CONSOLE_H
-#define YAFARAY_CONSOLE_H
+#ifndef LIBYAFARAY_XML_COMMAND_LINE_PARSER_H
+#define LIBYAFARAY_XML_COMMAND_LINE_PARSER_H
 
 #include <iostream>
 #include <iomanip>
@@ -28,6 +28,7 @@
 #include <string>
 #include <sstream>
 #include <limits>
+#include <memory>
 
 //! Struct that holds the state of the registered options and the values parsed from command line args
 class CliParserOption final
@@ -270,4 +271,4 @@ inline bool CliParser::parseCommandLine()
 	return true;
 }
 
-#endif //YAFARAY_CONSOLE_H
+#endif //LIBYAFARAY_XML_COMMAND_LINE_PARSER_H
