@@ -146,7 +146,7 @@ static xmlSAXHandler my_handler_global =
 	myFatalError
 };
 
-std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
 {
 	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_file_path || xmlSAXUserParseFile(&my_handler_global, &parser, xml_file_path) < 0)
@@ -154,10 +154,10 @@ std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser:
 		yafaray_printError(parser.getLogger(), ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
 		return {};
 	}
-	else return {true, parser.getScene(), parser.getRenderer(), parser.getFilm()};
+	else return {true, parser.getScene(), parser.getSurfaceIntegrator(), parser.getFilm()};
 }
 
-std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept
+std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept
 {
 	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_buffer || xml_buffer_size <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size) < 0)
@@ -165,7 +165,7 @@ std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> XmlParser:
 		yafaray_printError(parser.getLogger(), "XMLParser: Error parsing a memory buffer");
 		return {};
 	}
-	else return {true, parser.getScene(), parser.getRenderer(), parser.getFilm()};
+	else return {true, parser.getScene(), parser.getSurfaceIntegrator(), parser.getFilm()};
 }
 
 /*=============================================================
@@ -211,14 +211,14 @@ void XmlParser::createScene(const char *name)
 	yafaray_scene_ = yafaray_createScene(yafaray_logger_, name, yafaray_param_map_);
 }
 
-void XmlParser::createRenderer(const char *name, yafaray_DisplayConsole display_console)
+void XmlParser::createSurfaceIntegrator(const char *name)
 {
-	yafaray_renderer_ = yafaray_createRenderer(yafaray_logger_, yafaray_scene_, name, display_console, yafaray_param_map_);
+	yafaray_surface_integrator_ = yafaray_createSurfaceIntegrator(yafaray_logger_, name, yafaray_param_map_);
 }
 
 void XmlParser::createFilm(const char *name)
 {
-	yafaray_film_ = yafaray_createFilm(yafaray_logger_, yafaray_renderer_, name, yafaray_param_map_);
+	yafaray_film_ = yafaray_createFilm(yafaray_logger_, yafaray_surface_integrator_, name, yafaray_param_map_);
 }
 
 static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco)
@@ -465,9 +465,9 @@ void startElYafaRayXml(XmlParser &parser, const char *element, const char **attr
 	{
 		parser.pushState(startElScene, endElScene, "___no_name___");
 	}
-	else if(!strcmp(element, "renderer"))
+	else if(!strcmp(element, "surface_integrator"))
 	{
-		parser.pushState(startElRenderer, endElRenderer, "___no_name___");
+		parser.pushState(startElSurfaceIntegrator, endElSurfaceIntegrator, "___no_name___");
 	}
 	else if(!strcmp(element, "film"))
 	{
@@ -597,13 +597,13 @@ void endElScene(XmlParser &parser, const char *element)
 	}
 }
 
-void startElRenderer(XmlParser &parser, const char *element, const char **attrs)
+void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Renderer");
+	parser.setLastSection("SurfaceIntegrator");
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
 
-	if(!strcmp(element, "renderer_parameters"))
+	if(!strcmp(element, "surface_integrator_parameters"))
 	{
 		std::string element_name;
 		if(!attrs || !attrs[0])
@@ -626,9 +626,9 @@ void startElRenderer(XmlParser &parser, const char *element, const char **attrs)
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
 
-void endElRenderer(XmlParser &parser, const char *element)
+void endElSurfaceIntegrator(XmlParser &parser, const char *element)
 {
-	if(strcmp(element, "renderer") == 0)
+	if(strcmp(element, "surface_integrator") == 0)
 	{
 		parser.popState();
 	}
@@ -811,7 +811,7 @@ void endElParammap(XmlParser &parser, const char *element)
 		else
 		{
 			if(!strcmp(element, "scene_parameters")) parser.createScene(element_name.c_str());
-			else if(!strcmp(element, "renderer_parameters")) parser.createRenderer(element_name.c_str(), YAFARAY_DISPLAY_CONSOLE_NORMAL); //FIXME!
+			else if(!strcmp(element, "surface_integrator_parameters")) parser.createSurfaceIntegrator(element_name.c_str());
 			else if(!strcmp(element, "film_parameters")) parser.createFilm(element_name.c_str());
 			else if(!strcmp(element, "material"))
 			{
@@ -819,10 +819,10 @@ void endElParammap(XmlParser &parser, const char *element)
 				yafaray_createMaterial(parser.getScene(), &material_id, element_name.c_str(), parser.getParamMap(), parser.getParamMapList());
 				parser.setMaterialIdCurrent(material_id);
 			}
-			else if(!strcmp(element, "surface_integrator")) yafaray_defineSurfaceIntegrator(parser.getRenderer(), parser.getParamMap());
-			else if(!strcmp(element, "volume_integrator")) yafaray_defineVolumeIntegrator(parser.getRenderer(), parser.getScene(), parser.getParamMap());
+			else if(!strcmp(element, "volume_integrator")) yafaray_defineVolumeIntegrator(parser.getSurfaceIntegrator(), parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "light")) yafaray_createLight(parser.getScene(), element_name.c_str(), parser.getParamMap());
-			else if(!strcmp(element, "image")) yafaray_createImage(parser.getScene(), element_name.c_str(), nullptr, parser.getParamMap());
+			else if(!strcmp(element, "image"))
+				yafaray_createImage(parser.getScene(), element_name.c_str(), nullptr, parser.getParamMap());
 			else if(!strcmp(element, "texture")) yafaray_createTexture(parser.getScene(), element_name.c_str(), parser.getParamMap());
 			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), element_name.c_str(), parser.getParamMap());
 			else if(!strcmp(element, "background")) yafaray_defineBackground(parser.getScene(), parser.getParamMap());

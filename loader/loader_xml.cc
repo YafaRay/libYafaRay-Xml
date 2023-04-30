@@ -26,15 +26,15 @@
 #endif
 
 yafaray_Logger *yafaray_logger_global = nullptr;
-yafaray_Renderer *yafaray_renderer_global = nullptr;
+yafaray_RenderControl *yafaray_render_control_global = yafaray_createRenderControl();
 
 #ifdef WIN32
 BOOL WINAPI ctrlCHandler_global(DWORD signal)
 {
 	yafaray_printWarning(yi, "CTRL+C pressed, cancelling.\n");
-	if(yi)
+	if(yafaray_render_control_global)
 	{
-		yafaray_cancelRendering(yi);
+		yafaray_cancelRendering(yafaray_render_control_global);
 		return TRUE;
 	}
 	else exit(1);
@@ -45,7 +45,7 @@ void ctrlCHandler_global(int /*signal*/)
 	if(yafaray_logger_global)
 	{
 		yafaray_printWarning(yafaray_logger_global, "CTRL+C pressed, cancelling.\n");
-		if(yafaray_renderer_global) yafaray_cancelRendering(yafaray_logger_global, yafaray_renderer_global);
+		if(yafaray_render_control_global) yafaray_cancelRendering(yafaray_render_control_global);
 		else exit(1);
 	}
 	else exit(1);
@@ -137,21 +137,27 @@ int main(int argc, char *argv[])
 	const std::string xml_string = xml_stream_buffer.str();
 	yafaray_Scene *yafaray_scene = nullptr;
 	yafaray_Film *yafaray_film = nullptr;
-	yafaray_xml_ParseMemory(yafaray_logger_global, &yafaray_scene, &yafaray_renderer_global, &yafaray_film, xml_string.c_str(), static_cast<int>(xml_string.size()), input_color_space_string.c_str(), input_gamma);
+	yafaray_xml_ParseMemory(yafaray_logger_global, &yafaray_scene, &yafaray_surface_integrator_global, &yafaray_film, xml_string.c_str(), static_cast<int>(xml_string.size()), input_color_space_string.c_str(), input_gamma);
 #else
 	// Regular code using standard ParseFile (recommended)
 	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
 	yafaray_Scene *yafaray_scene = nullptr;
+	yafaray_SurfaceIntegrator *yafaray_surface_integrator = nullptr;
 	yafaray_Film *yafaray_film = nullptr;
-	yafaray_xml_ParseFile(yafaray_logger_global, &yafaray_scene, &yafaray_renderer_global, &yafaray_film, xml_file_path.c_str(), input_color_space_string.c_str(), input_gamma);
+	yafaray_xml_ParseFile(yafaray_logger_global, &yafaray_scene, &yafaray_surface_integrator, &yafaray_film, xml_file_path.c_str(), input_color_space_string.c_str(), input_gamma);
 #endif
-	yafaray_ParamMap *yafaray_param_map = yafaray_createParamMap();
-	yafaray_setupRender(yafaray_scene, yafaray_renderer_global, yafaray_param_map); /* FIXME is param_map necessary here? */
-	yafaray_render(yafaray_renderer_global, yafaray_film, yafaray_scene, nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
+	yafaray_SceneModifiedFlags yafaray_scene_modified_flags{YAFARAY_SCENE_MODIFIED_NOTHING};
+	yafaray_scene_modified_flags = yafaray_checkAndClearSceneModifiedFlags(yafaray_scene);
+	yafaray_preprocessScene(yafaray_scene, yafaray_render_control_global, yafaray_scene_modified_flags);
+	yafaray_RenderMonitor *yafaray_render_monitor = yafaray_createRenderMonitor(nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
+	yafaray_preprocessSurfaceIntegrator(yafaray_render_control_global, yafaray_render_monitor, yafaray_surface_integrator, yafaray_scene);
+	yafaray_render(yafaray_render_control_global, yafaray_render_monitor, yafaray_surface_integrator, yafaray_film, YAFARAY_RENDER_NORMAL);
+	yafaray_destroyRenderMonitor(yafaray_render_monitor);
 	yafaray_destroyFilm(yafaray_film);
-	yafaray_destroyRenderer(yafaray_renderer_global);
+	yafaray_destroySurfaceIntegrator(yafaray_surface_integrator);
 	yafaray_destroyScene(yafaray_scene);
 	yafaray_destroyLogger(yafaray_logger_global);
+	yafaray_destroyRenderControl(yafaray_render_control_global);
 	yafaray_xml_destroyCharString(version_string);
 	return 0;
 }

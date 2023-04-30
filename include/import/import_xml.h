@@ -17,8 +17,8 @@
  *      Foundation,Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#ifndef YAFARAY_IMPORT_XML_H
-#define YAFARAY_IMPORT_XML_H
+#ifndef LIBYAFARAY_XML_IMPORT_XML_H
+#define LIBYAFARAY_XML_IMPORT_XML_H
 
 #include <yafaray_c_api.h>
 #include <list>
@@ -84,9 +84,9 @@ class XmlParser final
 		void createScene(const char *name);
 		[[nodiscard]] yafaray_Scene *getScene() { return yafaray_scene_; }
 		[[nodiscard]] const yafaray_Scene *getScene() const { return yafaray_scene_; }
-		void createRenderer(const char *name, yafaray_DisplayConsole);
-		[[nodiscard]] yafaray_Renderer *getRenderer() { return yafaray_renderer_; }
-		[[nodiscard]] const yafaray_Renderer *getRenderer() const { return yafaray_renderer_; }
+		void createSurfaceIntegrator(const char *name);
+		[[nodiscard]] yafaray_SurfaceIntegrator *getSurfaceIntegrator() { return yafaray_surface_integrator_; }
+		[[nodiscard]] const yafaray_SurfaceIntegrator *getSurfaceIntegrator() const { return yafaray_surface_integrator_; }
 		void createFilm(const char *name);
 		[[nodiscard]] yafaray_Film *getFilm() { return yafaray_film_; }
 		[[nodiscard]] const yafaray_Film *getFilm() const { return yafaray_film_; }
@@ -105,8 +105,8 @@ class XmlParser final
 		void setMaterialIdCurrent(size_t material_id_current) { material_id_current_ = material_id_current; }
 		[[nodiscard]] float getTimeCurrent() const { return time_current_; }
 		void setTimeCurrent(float time_current) { time_current_ = time_current; }
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept;
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_Renderer *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept;
 
 	private:
 		std::vector<ParserState> state_stack_;
@@ -114,7 +114,7 @@ class XmlParser final
 		int level_ = 0;
 		yafaray_Logger *yafaray_logger_ = nullptr;
 		yafaray_Scene *yafaray_scene_ = nullptr;
-		yafaray_Renderer *yafaray_renderer_ = nullptr;
+		yafaray_SurfaceIntegrator *yafaray_surface_integrator_ = nullptr;
 		yafaray_Film *yafaray_film_ = nullptr;
 		yafaray_ParamMap *yafaray_param_map_ = nullptr;
 		yafaray_ParamMapList *yafaray_param_map_list_ = nullptr;
@@ -131,8 +131,8 @@ void startElYafaRayXml(XmlParser &p, const char *element, const char **attrs);
 void endElYafaRayXml(XmlParser &p, const char *element);
 void startElScene(XmlParser &p, const char *element, const char **attrs);
 void endElScene(XmlParser &p, const char *element);
-void startElRenderer(XmlParser &p, const char *element, const char **attrs);
-void endElRenderer(XmlParser &p, const char *element);
+void startElSurfaceIntegrator(XmlParser &p, const char *element, const char **attrs);
+void endElSurfaceIntegrator(XmlParser &p, const char *element);
 void startElFilm(XmlParser &p, const char *element, const char **attrs);
 void endElFilm(XmlParser &p, const char *element);
 void startElObject(XmlParser &p, const char *element, const char **attrs);
@@ -154,4 +154,4 @@ void endElInstanceMatrixTransform(XmlParser &p, const char *element);
 
 } //namespace yafaray_xml
 
-#endif // YAFARAY_IMPORT_XML_H
+#endif // LIBYAFARAY_XML_IMPORT_XML_H

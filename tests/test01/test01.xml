@@ -410,10 +410,9 @@ To test, using the terminal (or Windows "cmd") do this:
 			<f a="0" b="1" c="3" d="2"/>
 		</object>
 	</scene>
-	<renderer>
-		<renderer_parameters name="Renderer1">
-		</renderer_parameters>
-		<surface_integrator>
+	<surface_integrator>
+		<surface_integrator_parameters name="SceneIntegrator1">
+			<type sval="directlighting"/>
 			<AO_color r="0.9" g="0.9" b="0.9" a="1"/>
 			<AO_distance fval="1"/>
 			<AO_samples ival="32"/>
@@ -421,15 +420,13 @@ To test, using the terminal (or Windows "cmd") do this:
 			<bg_transp_refract bval="false"/>
 			<caustics bval="false"/>
 			<do_AO bval="false"/>
-			<photon_maps_processing sval="generate-only"/>
 			<raydepth ival="8"/>
 			<shadowDepth ival="2"/>
 			<time_forced bval="false"/>
 			<time_forced_value fval="0"/>
 			<transpShad bval="false"/>
-			<type sval="directlighting"/>
-		</surface_integrator>
-	</renderer>
+		</surface_integrator_parameters>
+	</surface_integrator>
 	<film>
 		<film_parameters name="Film1">
 			<width ival="480"/>
