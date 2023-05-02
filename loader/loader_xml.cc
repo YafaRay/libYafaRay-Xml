@@ -136,8 +136,9 @@ int main(int argc, char *argv[])
 	xml_stream_buffer << xml_stream.rdbuf();
 	const std::string xml_string = xml_stream_buffer.str();
 	yafaray_Scene *yafaray_scene = nullptr;
+	yafaray_SurfaceIntegrator *yafaray_surface_integrator = nullptr;
 	yafaray_Film *yafaray_film = nullptr;
-	yafaray_xml_ParseMemory(yafaray_logger_global, &yafaray_scene, &yafaray_surface_integrator_global, &yafaray_film, xml_string.c_str(), static_cast<int>(xml_string.size()), input_color_space_string.c_str(), input_gamma);
+	yafaray_xml_ParseMemory(yafaray_logger_global, &yafaray_scene, &yafaray_surface_integrator, &yafaray_film, xml_string.c_str(), static_cast<int>(xml_string.size()), input_color_space_string.c_str(), input_gamma);
 #else
 	// Regular code using standard ParseFile (recommended)
 	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
@@ -146,12 +147,13 @@ int main(int argc, char *argv[])
 	yafaray_Film *yafaray_film = nullptr;
 	yafaray_xml_ParseFile(yafaray_logger_global, &yafaray_scene, &yafaray_surface_integrator, &yafaray_film, xml_file_path.c_str(), input_color_space_string.c_str(), input_gamma);
 #endif
+	yafaray_setRenderControlForNormalStart(yafaray_render_control_global);
 	yafaray_SceneModifiedFlags yafaray_scene_modified_flags{YAFARAY_SCENE_MODIFIED_NOTHING};
 	yafaray_scene_modified_flags = yafaray_checkAndClearSceneModifiedFlags(yafaray_scene);
 	yafaray_preprocessScene(yafaray_scene, yafaray_render_control_global, yafaray_scene_modified_flags);
 	yafaray_RenderMonitor *yafaray_render_monitor = yafaray_createRenderMonitor(nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
-	yafaray_preprocessSurfaceIntegrator(yafaray_render_control_global, yafaray_render_monitor, yafaray_surface_integrator, yafaray_scene);
-	yafaray_render(yafaray_render_control_global, yafaray_render_monitor, yafaray_surface_integrator, yafaray_film, YAFARAY_RENDER_NORMAL);
+	yafaray_preprocessSurfaceIntegrator(yafaray_render_monitor, yafaray_surface_integrator, yafaray_render_control_global, yafaray_scene);
+	yafaray_render(yafaray_render_control_global, yafaray_render_monitor, yafaray_surface_integrator, yafaray_film);
 	yafaray_destroyRenderMonitor(yafaray_render_monitor);
 	yafaray_destroyFilm(yafaray_film);
 	yafaray_destroySurfaceIntegrator(yafaray_surface_integrator);
