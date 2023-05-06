@@ -10,8 +10,10 @@ To test, using the terminal (or Windows "cmd") do this:
 <yafaray_xml format_version="4.0.0">
 	<scene>
 		<scene_parameters name="Scene1">
-			<scene_accelerator sval="yafaray-kdtree-original"/>
 		</scene_parameters>
+		<accelerator>
+			<type sval="yafaray-kdtree-original"/>
+		</accelerator>
 		<image name="Texture.005_image">
 			<color_space sval="sRGB"/>
 			<filename sval="test01_tex.tif"/>
@@ -83,134 +85,122 @@ To test, using the terminal (or Windows "cmd") do this:
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.008">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture.005"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="0.5"/>
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.007">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture.004"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="1"/>
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.006">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture.003"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="0.6"/>
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.005">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture.002"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="0.4"/>
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.004">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
 				<colfac fval="0.95"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture.001"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="1"/>
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.003">
-			<list_element>
+			<shader_node>
 				<blend_mode sval="mix"/>
 				<colfac fval="0.95"/>
-				<element sval="shader_node"/>
 				<input sval="map0"/>
 				<name sval="diff_layer0"/>
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
-			</list_element>
-			<list_element>
-				<element sval="shader_node"/>
+			</shader_node>
+			<shader_node>
 				<mapping sval="cube"/>
 				<name sval="map0"/>
 				<texco sval="orco"/>
 				<texture sval="Texture"/>
 				<type sval="texture_mapper"/>
-			</list_element>
+			</shader_node>
 			<color r="0.8" g="0.8" b="0.8" a="1"/>
 			<diffuse_reflect fval="1"/>
 			<diffuse_shader sval="diff_layer0"/>
@@ -413,13 +403,13 @@ To test, using the terminal (or Windows "cmd") do this:
 	<surface_integrator>
 		<surface_integrator_parameters name="SceneIntegrator1">
 			<type sval="directlighting"/>
-			<AO_color r="0.9" g="0.9" b="0.9" a="1"/>
-			<AO_distance fval="1"/>
-			<AO_samples ival="32"/>
 			<bg_transp bval="false"/>
 			<bg_transp_refract bval="false"/>
 			<caustics bval="false"/>
 			<do_AO bval="false"/>
+			<AO_color r="0.9" g="0.9" b="0.9" a="1"/>
+			<AO_distance fval="1"/>
+			<AO_samples ival="32"/>
 			<raydepth ival="8"/>
 			<shadowDepth ival="2"/>
 			<time_forced bval="false"/>

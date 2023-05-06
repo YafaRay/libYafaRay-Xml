@@ -208,7 +208,7 @@ void XmlParser::popState()
 
 void XmlParser::createScene(const char *name)
 {
-	yafaray_scene_ = yafaray_createScene(yafaray_logger_, name, yafaray_param_map_);
+	yafaray_scene_ = yafaray_createScene(yafaray_logger_, name);
 }
 
 void XmlParser::createSurfaceIntegrator(const char *name)
@@ -532,6 +532,10 @@ void startElScene(XmlParser &parser, const char *element, const char **attrs)
 		//yafaray_endObjects();
 		parser.pushState(startElDummy, endElDummy, "___no_name___");
 	}
+	else if(!strcmp(element, "accelerator"))
+	{
+		parser.pushState(startElParammap, endElParammap, "___no_name___");
+	}
 	else if(!strcmp(element, "createInstance"))
 	{
 		parser.setInstanceIdCurrent(yafaray_createInstance(parser.getScene()));
@@ -788,10 +792,9 @@ void startElParammap(XmlParser &parser, const char *element, const char **attrs)
 	parser.setLastSection("Params map");
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
-	// support for lists of paramMaps
-	if(!strcmp(element, "list_element"))
+	if(!strcmp(element, "shader_node"))
 	{
-		parser.pushState(startElParamlist, endElParamlist, "___no_name___");
+		parser.pushState(startElShaderNode, endElShaderNode, "___no_name___");
 		return;
 	}
 	parseParam(parser.getParamMap(), attrs, element);
@@ -825,6 +828,7 @@ void endElParammap(XmlParser &parser, const char *element)
 				yafaray_createImage(parser.getScene(), element_name.c_str(), nullptr, parser.getParamMap());
 			else if(!strcmp(element, "texture")) yafaray_createTexture(parser.getScene(), element_name.c_str(), parser.getParamMap());
 			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "accelerator")) yafaray_setSceneAcceleratorParams(parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "background")) yafaray_defineBackground(parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "object_parameters"))
 			{
@@ -843,7 +847,7 @@ void endElParammap(XmlParser &parser, const char *element)
 	}
 }
 
-void startElParamlist(XmlParser &parser, const char *element, const char **attrs)
+void startElShaderNode(XmlParser &parser, const char *element, const char **attrs)
 {
 	parser.setLastSection("Params list");
 	parser.setLastElementName(element);
@@ -851,9 +855,9 @@ void startElParamlist(XmlParser &parser, const char *element, const char **attrs
 	parseParam(parser.getParamMap(), attrs, element);
 }
 
-void endElParamlist(XmlParser &parser, const char *element)
+void endElShaderNode(XmlParser &parser, const char *element)
 {
-	if(!strcmp(element, "list_element"))
+	if(!strcmp(element, "shader_node"))
 	{
 		parser.addParamMapToList();
 		parser.clearParamMap();

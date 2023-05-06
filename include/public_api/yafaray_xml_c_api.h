@@ -28,8 +28,8 @@
 extern "C" {
 #endif
 
-	YAFARAY_XML_C_API_EXPORT bool yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_SurfaceIntegrator **yafaray_surface_integrator, yafaray_Film **yafaray_film, const char *xml_file_path, const char *input_color_space, float input_gamma);
-	YAFARAY_XML_C_API_EXPORT bool yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, yafaray_Scene **yafaray_scene, yafaray_SurfaceIntegrator **yafaray_surface_integrator, yafaray_Film **yafaray_film, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma);
+	YAFARAY_XML_C_API_EXPORT yafaray_Container *yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma);
+	YAFARAY_XML_C_API_EXPORT yafaray_Container *yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma);
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMajor();
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionMinor();
 	YAFARAY_XML_C_API_EXPORT int yafaray_xml_getVersionPatch();
