@@ -46,16 +46,6 @@ void XmlParser::setLastElementNameAttrs(const char **element_attrs)
 	}
 }
 
-void startDocument(void *)
-{
-	//Empty
-}
-
-void endDocument(void *)
-{
-	//Empty
-}
-
 void startElement(void *user_data, const xmlChar *name, const xmlChar **attrs)
 {
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
@@ -132,8 +122,8 @@ static xmlSAXHandler my_handler_global =
 	nullptr,
 	nullptr,
 	nullptr,
-	startDocument, //  startDocumentSAXFunc startDocument;
-	endDocument, //  endDocumentSAXFunc endDocument;
+	nullptr, //  startDocumentSAXFunc startDocument;
+	nullptr, //  endDocumentSAXFunc endDocument;
 	startElement, //  startElementSAXFunc startElement;
 	endElement, //  endElementSAXFunc endElement;
 	nullptr,
