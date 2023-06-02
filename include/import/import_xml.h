@@ -124,6 +124,8 @@ class XmlParser final
 		float time_current_ = 0.f;
 };
 
+void parseParam(yafaray_ParamMap *yafaray_param_map, const char **attrs, const char *param_name);
+
 // state callbacks:
 void startElDocument(XmlParser &p, const char *element, const char **attrs);
 void endElDocument(XmlParser &p, const char *element);
@@ -151,6 +153,8 @@ void startElAddInstanceMatrix(XmlParser &p, const char *element, const char **at
 void endElAddInstanceMatrix(XmlParser &p, const char *element);
 void startElInstanceMatrixTransform(XmlParser &p, const char *element, const char **attrs);
 void endElInstanceMatrixTransform(XmlParser &p, const char *element);
+void startElDummy(XmlParser &p, const char *element, const char **attrs);
+void endElDummy(XmlParser &p, const char *element);
 
 } //namespace yafaray_xml
 

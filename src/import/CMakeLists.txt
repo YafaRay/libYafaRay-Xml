@@ -19,4 +19,13 @@
 target_sources(libyafaray4_xml
 	PRIVATE
 		import_xml.cc
+		state_document_root.cc
+		state_dummy.cc
+		state_film.cc
+		state_geometry.cc
+		state_instance.cc
+		state_param_map.cc
+		state_scene.cc
+		state_shader_node.cc
+		state_surface_integrator.cc
 )
