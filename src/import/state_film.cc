@@ -27,13 +27,10 @@ namespace yafaray_xml
 
 void startElFilm(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Film");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(!strcmp(element, "film_parameters") || !strcmp(element, "camera") || !strcmp(element, "output") || !strcmp(element, "layer"))
 	{
-		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
+		parser.pushState(startElParammap, endElParammap, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }

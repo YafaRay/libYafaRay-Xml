@@ -23,9 +23,9 @@
 namespace yafaray_xml
 {
 
-void startElDummy(XmlParser &parser, const char *, const char **)
+void startElDummy(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.pushState(startElDummy, endElDummy, "");
+	parser.pushState(startElDummy, endElDummy, element, attrs);
 }
 
 void endElDummy(XmlParser &parser, const char *)

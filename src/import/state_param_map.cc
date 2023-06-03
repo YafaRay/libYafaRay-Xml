@@ -27,12 +27,9 @@ namespace yafaray_xml
 
 void startElParammap(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Params map");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 	if(!strcmp(element, "shader_node"))
 	{
-		parser.pushState(startElShaderNode, endElShaderNode, getElementName(parser, attrs));
+		parser.pushState(startElShaderNode, endElShaderNode, element, attrs);
 		return;
 	}
 	parseParam(parser.getParamMap(), attrs, element);
@@ -45,7 +42,7 @@ void endElParammap(XmlParser &parser, const char *element)
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
-		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0 && strcmp(element, "background") != 0 && strcmp(element, "surface_integrator") != 0 && strcmp(element, "volume_integrator") != 0)
+		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0 && strcmp(element, "background") != 0 && strcmp(element, "surface_integrator") != 0 && strcmp(element, "volume_integrator") != 0 && strcmp(element, "layer") != 0 && strcmp(element, "accelerator") != 0)
 		{
 			yafaray_printWarning(parser.getLogger(), ("XMLParser: No name for element '" + std::string(element) + "' available!").c_str());
 		}

@@ -26,9 +26,6 @@ namespace yafaray_xml
 
 void startElShaderNode(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Params list");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 	parseParam(parser.getParamMap(), attrs, element);
 }
 

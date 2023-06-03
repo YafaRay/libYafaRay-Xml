@@ -31,9 +31,6 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 
 void startElObject(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Object");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(!strcmp(element, "p"))
 	{
@@ -119,7 +116,7 @@ void startElObject(XmlParser &parser, const char *element, const char **attrs)
 	}
 	else if(!strcmp(element, "object_parameters"))
 	{
-		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
+		parser.pushState(startElParammap, endElParammap, element, attrs);
 	}
 }
 

@@ -29,9 +29,6 @@ namespace yafaray_xml
 
 void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("Document");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(strcmp(element, "yafaray_xml") == 0)
 	{
@@ -67,7 +64,7 @@ void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 			yafaray_printWarning(parser.getLogger(), "XMLParser: Attribute for yafaray_xml element does not match 'format_version'!");
 			return;
 		}
-		parser.pushState(startElYafaRayXml, endElYafaRayXml, getElementName(parser, attrs));
+		parser.pushState(startElYafaRayXml, endElYafaRayXml, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_xml' was expected, skipping...").c_str());
 }
@@ -79,21 +76,18 @@ void endElDocument(XmlParser &parser, const char *)
 
 void startElYafaRayXml(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("YafarayXml");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(!strcmp(element, "scene"))
 	{
-		parser.pushState(startElScene, endElScene, getElementName(parser, attrs));
+		parser.pushState(startElScene, endElScene, element, attrs);
 	}
 	else if(!strcmp(element, "surface_integrator"))
 	{
-		parser.pushState(startElSurfaceIntegrator, endElSurfaceIntegrator, getElementName(parser, attrs));
+		parser.pushState(startElSurfaceIntegrator, endElSurfaceIntegrator, element, attrs);
 	}
 	else if(!strcmp(element, "film"))
 	{
-		parser.pushState(startElFilm, endElFilm, getElementName(parser, attrs));
+		parser.pushState(startElFilm, endElFilm, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized YafaRayXml element '" + std::string(element) + "'").c_str());
 }

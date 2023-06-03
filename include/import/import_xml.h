@@ -37,13 +37,13 @@ typedef void (*EndElementCb_t)(XmlParser &p, const char *element);
 
 struct ParserState
 {
+	[[nodiscard]] std::string print() const;
 	StartElementCb_t start_;
 	EndElementCb_t end_;
+	std::string element_;
 	std::string element_name_;
+	std::string element_attributes_;
 	int level_;
-	std::string last_section_; //! to show last section previous to a XML Parser error
-	std::string last_element_; //! to show last element previous to a XML Parser error
-	std::string last_element_attrs_; //! to show last element attributes previous to a XML Parser error
 };
 
 class XmlParser final
@@ -51,36 +51,25 @@ class XmlParser final
 	public:
 		XmlParser(yafaray_Logger *yafaray_logger, const char *input_color_space, float input_gamma);
 		~XmlParser();
-		void pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name);
+		void pushState(StartElementCb_t start, EndElementCb_t end, const char *element, const char **element_attrs);
 		void popState();
+		[[nodiscard]] std::string printStateStack() const;
 		void startElement(const char *element, const char **attrs) { ++level_; if(current_) current_->start_(*this, element, attrs); }
 		void endElement(const char *element) { if(current_) current_->end_(*this, element); --level_; }
 		[[nodiscard]] std::string stateElementName() const { return current_->element_name_; }
 		[[nodiscard]] int currLevel() const { return level_; }
 		[[nodiscard]] int stateLevel() const { return current_ ? current_->level_ : -1; }
-		void setLastSection(const std::string &section) { current_->last_section_ = section; }
-		void setLastElementName(const char *element_name);
-		void setLastElementNameAttrs(const char **element_attrs);
-		[[nodiscard]] std::string getLastSection() const { return current_->last_section_; }
-		[[nodiscard]] std::string getLastElementName() const { return current_->last_element_; }
-		[[nodiscard]] std::string getLastElementNameAttrs() const { return current_->last_element_attrs_; }
 		[[nodiscard]] yafaray_Logger *getLogger() { return yafaray_logger_; }
-		[[nodiscard]] const yafaray_Logger *getLogger() const { return yafaray_logger_; }
 		void createScene(const char *name);
 		[[nodiscard]] yafaray_Scene *getScene() { return yafaray_scene_; }
-		[[nodiscard]] const yafaray_Scene *getScene() const { return yafaray_scene_; }
 		void createSurfaceIntegrator(const char *name);
 		[[nodiscard]] yafaray_SurfaceIntegrator *getSurfaceIntegrator() { return yafaray_surface_integrator_; }
-		[[nodiscard]] const yafaray_SurfaceIntegrator *getSurfaceIntegrator() const { return yafaray_surface_integrator_; }
 		void createFilm(const char *name);
 		[[nodiscard]] yafaray_Film *getFilm() { return yafaray_film_; }
-		[[nodiscard]] const yafaray_Film *getFilm() const { return yafaray_film_; }
 		[[nodiscard]] yafaray_ParamMap *getParamMap() { return yafaray_param_map_; }
-		[[nodiscard]] const yafaray_ParamMap *getParamMap() const { return yafaray_param_map_; }
 		void clearParamMap() { yafaray_clearParamMap(yafaray_param_map_); }
 		void clearParamMapList() { yafaray_clearParamMapList(yafaray_param_map_list_); }
 		[[nodiscard]] yafaray_ParamMapList *getParamMapList() { return yafaray_param_map_list_; }
-		[[nodiscard]] const yafaray_ParamMapList *getParamMapList() const { return yafaray_param_map_list_; }
 		void addParamMapToList() { yafaray_addParamMapToList(yafaray_param_map_list_, yafaray_param_map_); }
 		[[nodiscard]] size_t getInstanceIdCurrent() const { return instance_id_current_; }
 		void setInstanceIdCurrent(size_t instance_id_current) { instance_id_current_ = instance_id_current; }

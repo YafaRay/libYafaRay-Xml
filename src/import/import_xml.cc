@@ -25,7 +25,7 @@
 #include <sstream>
 #include <iostream>
 
-#define DEBUG_XML
+//#define DEBUG_XML
 
 namespace yafaray_xml
 {
@@ -50,15 +50,9 @@ void endElement(void *user_data, const xmlChar *name)
 }
 
 enum XmlErrorSeverity { Warning, Error, FatalError };
-static void xmlErrorProcessing(XmlErrorSeverity xml_error_severity, void *user_data, const char *msg, ...)
+static void xmlErrorProcessing(XmlErrorSeverity xml_error_severity, void *user_data)
 {
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
-	const size_t message_size = 1000;
-	char message_buffer[message_size];
-	va_list args;
-	va_start(args, msg);
-	vsnprintf(message_buffer, message_size, msg, args);
-	va_end(args);
 	std::stringstream message_stream;
 	message_stream << "XMLParser ";
 	switch(xml_error_severity)
@@ -68,9 +62,9 @@ static void xmlErrorProcessing(XmlErrorSeverity xml_error_severity, void *user_d
 		case XmlErrorSeverity::Warning:
 		default: message_stream << "warning: "; break;
 	}
-	message_stream << "XMLParser warning: " << std::string(message_buffer);
-	message_stream << " in section '" << parser.getLastSection() << ", level " << parser.currLevel();
-	message_stream << " an element previous to the error: '" << parser.getLastElementName() << "', attrs: { " << parser.getLastElementNameAttrs() << " }";
+
+	xmlErrorPtr error = xmlGetLastError();
+	message_stream << "(error code " << error->code << ") [line:" << error->line << ", col:" << error->int2 << "] " << error->message;
 	switch(xml_error_severity)
 	{
 		case XmlErrorSeverity::FatalError:
@@ -82,21 +76,17 @@ static void xmlErrorProcessing(XmlErrorSeverity xml_error_severity, void *user_d
 
 static void myWarning(void *user_data, const char *msg, ...)
 {
-	va_list args;
-	xmlErrorProcessing(XmlErrorSeverity::Warning, user_data, msg, args);
+	xmlErrorProcessing(XmlErrorSeverity::Warning, user_data);
 }
 
 static void myError(void *user_data, const char *msg, ...)
 {
-	va_list args;
-	xmlErrorProcessing(XmlErrorSeverity::Error, user_data, msg, args);
+	xmlErrorProcessing(XmlErrorSeverity::Error, user_data);
 }
 
 static void myFatalError(void *user_data, const char *msg, ...)
 {
-	va_list args;
-	xmlErrorProcessing(XmlErrorSeverity::FatalError, user_data, msg, args);
-	va_end(args);
+	xmlErrorProcessing(XmlErrorSeverity::FatalError, user_data);
 }
 
 static xmlSAXHandler my_handler_global =
@@ -135,7 +125,7 @@ XmlParser::XmlParser(yafaray_Logger *yafaray_logger, const char *input_color_spa
 {
 	if(yafaray_param_map_) yafaray_setInputColorSpace(yafaray_param_map_, input_color_space, input_gamma);
 	std::setlocale(LC_NUMERIC, "C"); //To make sure floating points in the xml file are evaluated using the dot and not a comma in some locales
-	pushState(startElDocument, endElDocument, "");
+	pushState(startElDocument, endElDocument, "root", nullptr);
 }
 
 XmlParser::~XmlParser()
@@ -144,12 +134,14 @@ XmlParser::~XmlParser()
 	yafaray_destroyParamMap(yafaray_param_map_);
 }
 
-void XmlParser::pushState(StartElementCb_t start, EndElementCb_t end, const std::string &element_name)
+void XmlParser::pushState(StartElementCb_t start, EndElementCb_t end, const char *element, const char **element_attrs)
 {
 	ParserState state;
 	state.start_ = start;
 	state.end_ = end;
-	state.element_name_ = element_name;
+	state.element_ = element;
+	state.element_name_ = getElementName(*this, element_attrs);
+	state.element_attributes_ = getElementAttrs(element_attrs);
 	state.level_ = level_;
 	state_stack_.push_back(state);
 	current_ = &state_stack_.back();
@@ -177,25 +169,6 @@ void XmlParser::createFilm(const char *name)
 	yafaray_film_ = yafaray_createFilm(yafaray_logger_, yafaray_surface_integrator_, name, yafaray_param_map_);
 }
 
-void XmlParser::setLastElementName(const char *element_name)
-{
-	if(element_name) current_->last_element_ = element_name;
-	else current_->last_element_.clear();
-}
-
-void XmlParser::setLastElementNameAttrs(const char **element_attrs)
-{
-	current_->last_element_attrs_.clear();
-	if(element_attrs)
-	{
-		for(int n = 0; element_attrs[n]; ++n)
-		{
-			if(n > 0) current_->last_element_attrs_ += " ";
-			current_->last_element_attrs_ += element_attrs[n];
-		}
-	}
-}
-
 std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
 {
 	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
@@ -218,4 +191,21 @@ std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> X
 	else return {true, parser.getScene(), parser.getSurfaceIntegrator(), parser.getFilm()};
 }
 
+std::string XmlParser::printStateStack() const
+{
+	std::stringstream ss;
+	ss << "XML element stack up to the error:" << std::endl;
+	for(const auto &state : state_stack_)
+	{
+		ss << state.print() << std::endl;
+	}
+	return ss.str();
+}
+
+std::string ParserState::print() const
+{
+	std::stringstream ss;
+	ss << "Level:" << level_ << " Element:'" << element_ << "' name:'" << element_name_ << "' attrs:" << element_attributes_;
+	return ss.str();
+}
 } //namespace yafaray_xml

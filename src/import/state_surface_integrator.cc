@@ -27,13 +27,10 @@ namespace yafaray_xml
 
 void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("SurfaceIntegrator");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(!strcmp(element, "surface_integrator_parameters") || !strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
 	{
-		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
+		parser.pushState(startElParammap, endElParammap, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }

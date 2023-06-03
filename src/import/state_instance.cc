@@ -50,9 +50,6 @@ void endElAddInstanceOfInstance(XmlParser &parser, const char *element)
 
 void startElAddInstanceMatrix(XmlParser &parser, const char *element, const char **attrs)
 {
-	parser.setLastSection("AddInstanceMatrix");
-	parser.setLastElementName(element);
-	parser.setLastElementNameAttrs(attrs);
 
 	if(!strcmp(element, "transform"))
 	{
