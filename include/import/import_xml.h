@@ -46,21 +46,6 @@ struct ParserState
 	std::string last_element_attrs_; //! to show last element attributes previous to a XML Parser error
 };
 
-struct Vec3f
-{
-	explicit Vec3f() = default;
-	explicit Vec3f(float x, float y, float z) : x_(x), y_(y), z_(z) { }
-	float x_, y_, z_;
-};
-
-struct Rgba
-{
-	explicit Rgba(float v) : Rgba(v, 1.f) { }
-	explicit Rgba(float v, float a) : Rgba(v, v, v, a) { }
-	explicit Rgba(float r, float g, float b, float a) : r_(r), g_(g), b_(b), a_(a) { }
-	float r_, g_, b_, a_;
-};
-
 class XmlParser final
 {
 	public:

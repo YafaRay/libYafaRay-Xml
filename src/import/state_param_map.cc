@@ -19,6 +19,8 @@
  */
 
 #include "import/import_xml.h"
+#include "common/vec3f.h"
+#include "common/rgba.h"
 #include <cstring>
 
 namespace yafaray_xml

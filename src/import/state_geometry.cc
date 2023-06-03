@@ -19,6 +19,7 @@
  */
 
 #include "import/import_xml.h"
+#include "common/vec3f.h"
 #include <cstring>
 
 namespace yafaray_xml
