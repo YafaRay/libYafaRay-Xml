@@ -64,7 +64,7 @@ static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f
 
 static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &n, int &time_step)
 {
-	int compo_read = 0;
+	int number_of_components_read = 0;
 	for(; attrs && attrs[0]; attrs += 2)
 	{
 		if(attrs[0][1] != 0)
@@ -74,14 +74,14 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 		}
 		switch(attrs[0][0])
 		{
-			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
-			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
-			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); compo_read++; break;
-			case 't' : time_step = atoi(attrs[1]); compo_read++; break;
+			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 't' : time_step = atoi(attrs[1]); ++number_of_components_read; break;
 			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
 		}
 	}
-	return (compo_read == 3);
+	return (number_of_components_read == 3 || number_of_components_read == 4);
 }
 
 void startElObject(XmlParser &parser, const char *element, const char **attrs)
