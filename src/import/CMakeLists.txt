@@ -19,6 +19,7 @@
 target_sources(libyafaray4_xml
 	PRIVATE
 		import_xml.cc
+		parse_param.cc
 		state_document_root.cc
 		state_dummy.cc
 		state_film.cc

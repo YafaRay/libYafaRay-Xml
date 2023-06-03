@@ -56,7 +56,7 @@ static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f
 			case 'x' : p.x_ = static_cast<float>(atof(attrs[1])); break;
 			case 'y' : p.y_ = static_cast<float>(atof(attrs[1])); break;
 			case 'z' : p.z_ = static_cast<float>(atof(attrs[1])); break;
-			case 't' : time_step = atoi(attrs[1]); break;
+			case 's' : time_step = atoi(attrs[1]); break;
 			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
 		}
 	}
@@ -77,7 +77,7 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
 			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
 			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
-			case 't' : time_step = atoi(attrs[1]); ++number_of_components_read; break;
+			case 's' : time_step = atoi(attrs[1]); ++number_of_components_read; break;
 			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
 		}
 	}
@@ -189,6 +189,5 @@ void endElObject(XmlParser &parser, const char *element)
 		parser.popState();
 	}
 }
-
 
 } //namespace yafaray_xml
