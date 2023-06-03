@@ -399,10 +399,9 @@ To test, using the terminal (or Windows "cmd") do this:
 			<set_material sval="Material.002"/>
 			<f a="0" b="1" c="3" d="2"/>
 		</object>
-	</scene>
-	<surface_integrator>
+	<integratorqwe we
 		<surface_integrator_parameters name="SceneIntegrator1">
-			<type sval="directlighting"/>
+			<type sval="directlighting"/> >ewrwer
 			<bg_transp bval="false"/>
 			<bg_transp_refract bval="false"/>
 			<caustics bval="false"/>

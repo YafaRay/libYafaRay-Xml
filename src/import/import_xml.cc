@@ -21,21 +21,30 @@
 #include "import/import_xml.h"
 #include <libxml/parser.h>
 #include "common/version_build_info.h"
+#include "common/element_parser_utils.h"
 #include <sstream>
+#include <iostream>
+
+#define DEBUG_XML
 
 namespace yafaray_xml
 {
 
 void startElement(void *user_data, const xmlChar *name, const xmlChar **attrs)
 {
-	//std::cout << "startElement:" << name << std::endl;
+#ifdef DEBUG_XML
+	std::cout << "startElement <" << name << getElementAttrs((const char **)attrs) << ">" << std::endl;
+
+#endif //DEBUG_XML
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
 	parser.startElement((const char *)name, (const char **)attrs);
 }
 
 void endElement(void *user_data, const xmlChar *name)
 {
-	//std::cout << "endElement:" << name << std::endl;
+#ifdef DEBUG_XML
+	std::cout << "endElement </" << name << ">" << std::endl;
+#endif //DEBUG_XML
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
 	parser.endElement((const char *)name);
 }

@@ -20,7 +20,7 @@
 
 #include "import/import_xml.h"
 #include "common/vec3f.h"
-#include "common/get_element_name.h"
+#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml

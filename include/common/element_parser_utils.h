@@ -19,12 +19,13 @@
  *
  */
 
-#ifndef LIBYAFARAY_XML_GET_ELEMENT_NAME_H
-#define LIBYAFARAY_XML_GET_ELEMENT_NAME_H
+#ifndef LIBYAFARAY_XML_ELEMENT_PARSER_UTILS_H
+#define LIBYAFARAY_XML_ELEMENT_PARSER_UTILS_H
 
 #include "import/import_xml.h"
 #include <cstring>
 #include <string>
+#include <sstream>
 
 namespace yafaray_xml
 {
@@ -34,20 +35,41 @@ inline std::string getElementName(XmlParser &parser, const char **attrs)
 	if(!attrs || !attrs[0])
 	{
 		//yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
-		return "___no_name___";
+		return {};
 	}
 
-	if(!strcmp(attrs[0], "name"))
+	if(attrs && !strcmp(attrs[0], "name"))
 	{
 		return attrs[1];
 	}
 	else
 	{
 		//yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
-		return "___no_name___";
+		return {};
+	}
+}
+
+inline std::string getElementAttrs(const char **attrs)
+{
+	if(attrs)
+	{
+		std::stringstream ss;
+		ss << " ";
+		for(size_t i = 0; attrs[2 * i]; ++i)
+		{
+			if(i > 0) ss << " ";
+			ss << attrs[2 * i];
+			if(attrs[2 * i + 1]) ss << "=\"" << attrs[2 * i + 1];
+			ss << "\"";
+		}
+		return ss.str();
+	}
+	else
+	{
+		return {};
 	}
 }
 
 } //namespace yafaray_xml
 
-#endif //LIBYAFARAY_XML_GET_ELEMENT_NAME_H
+#endif //LIBYAFARAY_XML_ELEMENT_PARSER_UTILS_H
