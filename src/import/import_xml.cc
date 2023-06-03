@@ -22,21 +22,20 @@
 #include <libxml/parser.h>
 #include "common/version_build_info.h"
 #include <sstream>
-#include <iostream>
 
 namespace yafaray_xml
 {
 
 void startElement(void *user_data, const xmlChar *name, const xmlChar **attrs)
 {
-	std::cout << "startElement:" << name << std::endl;
+	//std::cout << "startElement:" << name << std::endl;
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
 	parser.startElement((const char *)name, (const char **)attrs);
 }
 
 void endElement(void *user_data, const xmlChar *name)
 {
-	std::cout << "endElement:" << name << std::endl;
+	//std::cout << "endElement:" << name << std::endl;
 	XmlParser &parser = *static_cast<XmlParser *>(user_data);
 	parser.endElement((const char *)name);
 }
