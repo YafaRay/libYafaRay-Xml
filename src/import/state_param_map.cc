@@ -19,6 +19,7 @@
  */
 
 #include "import/import_xml.h"
+#include "common/get_element_name.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -31,7 +32,7 @@ void startElParammap(XmlParser &parser, const char *element, const char **attrs)
 	parser.setLastElementNameAttrs(attrs);
 	if(!strcmp(element, "shader_node"))
 	{
-		parser.pushState(startElShaderNode, endElShaderNode, "___no_name___");
+		parser.pushState(startElShaderNode, endElShaderNode, getElementName(parser, attrs));
 		return;
 	}
 	parseParam(parser.getParamMap(), attrs, element);

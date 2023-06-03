@@ -19,6 +19,7 @@
  */
 
 #include "import/import_xml.h"
+#include "common/get_element_name.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -30,25 +31,9 @@ void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char
 	parser.setLastElementName(element);
 	parser.setLastElementNameAttrs(attrs);
 
-	if(!strcmp(element, "surface_integrator_parameters"))
+	if(!strcmp(element, "surface_integrator_parameters") || !strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
 	{
-		std::string element_name;
-		if(!attrs || !attrs[0])
-		{
-			yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
-			return;
-		}
-		else if(!strcmp(attrs[0], "name")) element_name = attrs[1];
-		else
-		{
-			yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
-			return;
-		}
-		parser.pushState(startElParammap, endElParammap, element_name);
-	}
-	else if(!strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
-	{
-		parser.pushState(startElParammap, endElParammap, "___no_name___");
+		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }

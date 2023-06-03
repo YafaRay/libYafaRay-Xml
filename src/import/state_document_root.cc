@@ -21,6 +21,7 @@
 #include "import/import_xml.h"
 #include "common/version.h"
 #include "common/version_build_info.h"
+#include "common/get_element_name.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -66,7 +67,7 @@ void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 			yafaray_printWarning(parser.getLogger(), "XMLParser: Attribute for yafaray_xml element does not match 'format_version'!");
 			return;
 		}
-		parser.pushState(startElYafaRayXml, endElYafaRayXml, "___no_name___");
+		parser.pushState(startElYafaRayXml, endElYafaRayXml, getElementName(parser, attrs));
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_xml' was expected, skipping...").c_str());
 }
@@ -84,15 +85,15 @@ void startElYafaRayXml(XmlParser &parser, const char *element, const char **attr
 
 	if(!strcmp(element, "scene"))
 	{
-		parser.pushState(startElScene, endElScene, "___no_name___");
+		parser.pushState(startElScene, endElScene, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "surface_integrator"))
 	{
-		parser.pushState(startElSurfaceIntegrator, endElSurfaceIntegrator, "___no_name___");
+		parser.pushState(startElSurfaceIntegrator, endElSurfaceIntegrator, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "film"))
 	{
-		parser.pushState(startElFilm, endElFilm, "___no_name___");
+		parser.pushState(startElFilm, endElFilm, getElementName(parser, attrs));
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized YafaRayXml element '" + std::string(element) + "'").c_str());
 }

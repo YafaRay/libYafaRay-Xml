@@ -20,6 +20,7 @@
 
 #include "import/import_xml.h"
 #include "common/vec3f.h"
+#include "common/get_element_name.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -112,16 +113,13 @@ void startElObject(XmlParser &parser, const char *element, const char **attrs)
 	}
 	else if(!strcmp(element, "set_material"))
 	{
-		std::string mat_name(attrs[1]);
 		size_t material_id;
-		yafaray_getMaterialId(parser.getScene(), &material_id, mat_name.c_str());
+		yafaray_getMaterialId(parser.getScene(), &material_id, attrs[1]);
 		parser.setMaterialIdCurrent(material_id);
 	}
 	else if(!strcmp(element, "object_parameters"))
 	{
-		std::string element_name;
-		if(!strcmp(attrs[0], "name")) element_name = attrs[1];
-		parser.pushState(startElParammap, endElParammap, element_name);
+		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
 	}
 }
 

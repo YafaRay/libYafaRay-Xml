@@ -19,6 +19,7 @@
  */
 
 #include "import/import_xml.h"
+#include "common/get_element_name.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -32,23 +33,11 @@ void startElScene(XmlParser &parser, const char *element, const char **attrs)
 
 	if(!strcmp(element, "scene_parameters") || !strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "volumeregion") || !strcmp(element, "image") || !strcmp(element, "light"))
 	{
-		std::string element_name;
-		if(!attrs || !attrs[0])
-		{
-			yafaray_printWarning(parser.getLogger(), ("XMLParser: No attributes for element '" + element_name + "'!").c_str());
-			return;
-		}
-		else if(!strcmp(attrs[0], "name")) element_name = attrs[1];
-		else
-		{
-			yafaray_printWarning(parser.getLogger(), ("XMLParser: Attribute for element '" + element_name + "does not match 'name'!").c_str());
-			return;
-		}
-		parser.pushState(startElParammap, endElParammap, element_name);
+		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "background"))
 	{
-		parser.pushState(startElParammap, endElParammap, "___no_name___");
+		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "object"))
 	{
@@ -70,11 +59,11 @@ void startElScene(XmlParser &parser, const char *element, const char **attrs)
 		bool success = yafaray_smoothObjectMesh(parser.getScene(), object_id, angle);
 		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with object_name='" + element_name + "', angle = " + std::to_string(angle)).c_str());
 		//yafaray_endObjects();
-		parser.pushState(startElDummy, endElDummy, "___no_name___");
+		parser.pushState(startElDummy, endElDummy, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "accelerator"))
 	{
-		parser.pushState(startElParammap, endElParammap, "___no_name___");
+		parser.pushState(startElParammap, endElParammap, getElementName(parser, attrs));
 	}
 	else if(!strcmp(element, "createInstance"))
 	{
