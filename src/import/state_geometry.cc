@@ -25,64 +25,8 @@
 namespace yafaray_xml
 {
 
-static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco)
-{
-	for(; attrs && attrs[0]; attrs += 2)
-	{
-		if(attrs[0][0] == 'o')
-		{
-			has_orco = true;
-			if(attrs[0][1] == 0 || attrs[0][2] != 0)
-			{
-				yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (1)").c_str());
-				continue; //it is not a single character
-			}
-			switch(attrs[0][1])
-			{
-				case 'x' : op.x_ = static_cast<float>(atof(attrs[1])); break;
-				case 'y' : op.y_ = static_cast<float>(atof(attrs[1])); break;
-				case 'z' : op.z_ = static_cast<float>(atof(attrs[1])); break;
-				default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (2)").c_str());
-			}
-			continue;
-		}
-		else if(attrs[0][1] != 0)
-		{
-			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
-			continue; //it is not a single character
-		}
-		switch(attrs[0][0])
-		{
-			case 'x' : p.x_ = static_cast<float>(atof(attrs[1])); break;
-			case 'y' : p.y_ = static_cast<float>(atof(attrs[1])); break;
-			case 'z' : p.z_ = static_cast<float>(atof(attrs[1])); break;
-			case 's' : time_step = atoi(attrs[1]); break;
-			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
-		}
-	}
-}
-
-static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &n, int &time_step)
-{
-	int number_of_components_read = 0;
-	for(; attrs && attrs[0]; attrs += 2)
-	{
-		if(attrs[0][1] != 0)
-		{
-			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
-			continue; //it is not a single character
-		}
-		switch(attrs[0][0])
-		{
-			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
-			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
-			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
-			case 's' : time_step = atoi(attrs[1]); ++number_of_components_read; break;
-			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
-		}
-	}
-	return (number_of_components_read == 3 || number_of_components_read == 4);
-}
+static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco);
+static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &n, int &time_step);
 
 void startElObject(XmlParser &parser, const char *element, const char **attrs)
 {
@@ -188,6 +132,65 @@ void endElObject(XmlParser &parser, const char *element)
 		yafaray_initObject(parser.getScene(), parser.getObjectIdCurrent(), parser.getMaterialIdCurrent());
 		parser.popState();
 	}
+}
+
+static void parsePoint(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &p, Vec3f &op, int &time_step, bool &has_orco)
+{
+	for(; attrs && attrs[0]; attrs += 2)
+	{
+		if(attrs[0][0] == 'o')
+		{
+			has_orco = true;
+			if(attrs[0][1] == 0 || attrs[0][2] != 0)
+			{
+				yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (1)").c_str());
+				continue; //it is not a single character
+			}
+			switch(attrs[0][1])
+			{
+				case 'x' : op.x_ = static_cast<float>(atof(attrs[1])); break;
+				case 'y' : op.y_ = static_cast<float>(atof(attrs[1])); break;
+				case 'z' : op.z_ = static_cast<float>(atof(attrs[1])); break;
+				default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in orco point (2)").c_str());
+			}
+			continue;
+		}
+		else if(attrs[0][1] != 0)
+		{
+			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
+			continue; //it is not a single character
+		}
+		switch(attrs[0][0])
+		{
+			case 'x' : p.x_ = static_cast<float>(atof(attrs[1])); break;
+			case 'y' : p.y_ = static_cast<float>(atof(attrs[1])); break;
+			case 'z' : p.z_ = static_cast<float>(atof(attrs[1])); break;
+			case 's' : time_step = atoi(attrs[1]); break;
+			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in point").c_str());
+		}
+	}
+}
+
+static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3f &n, int &time_step)
+{
+	int number_of_components_read = 0;
+	for(; attrs && attrs[0]; attrs += 2)
+	{
+		if(attrs[0][1] != 0)
+		{
+			yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
+			continue; //it is not a single character
+		}
+		switch(attrs[0][0])
+		{
+			case 'x' : n.x_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 'y' : n.y_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 'z' : n.z_ = static_cast<float>(atof(attrs[1])); ++number_of_components_read; break;
+			case 's' : time_step = atoi(attrs[1]); ++number_of_components_read; break;
+			default: yafaray_printWarning(yafaray_logger, ("XMLParser: Ignored wrong attribute " + std::string(attrs[0]) + " in normal").c_str());
+		}
+	}
+	return (number_of_components_read == 3 || number_of_components_read == 4);
 }
 
 } //namespace yafaray_xml

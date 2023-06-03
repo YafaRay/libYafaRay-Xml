@@ -23,14 +23,14 @@
 namespace yafaray_xml
 {
 
-void endElDummy(XmlParser &parser, const char *)
-{
-	parser.popState();
-}
-
 void startElDummy(XmlParser &parser, const char *, const char **)
 {
 	parser.pushState(startElDummy, endElDummy, "___no_name___");
+}
+
+void endElDummy(XmlParser &parser, const char *)
+{
+	parser.popState();
 }
 
 } //namespace yafaray_xml
