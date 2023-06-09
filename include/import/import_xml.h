@@ -103,8 +103,8 @@ void parseParam(yafaray_ParamMap *yafaray_param_map, const char **attrs, const c
 // state callbacks:
 void startElDocument(XmlParser &p, const char *element, const char **attrs);
 void endElDocument(XmlParser &p, const char *element);
-void startElYafaRayXml(XmlParser &p, const char *element, const char **attrs);
-void endElYafaRayXml(XmlParser &p, const char *element);
+void startElYafaRayContainer(XmlParser &p, const char *element, const char **attrs);
+void endElYafaRayContainer(XmlParser &p, const char *element);
 void startElScene(XmlParser &p, const char *element, const char **attrs);
 void endElScene(XmlParser &p, const char *element);
 void startElSurfaceIntegrator(XmlParser &p, const char *element, const char **attrs);

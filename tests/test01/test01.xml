@@ -7,7 +7,7 @@ To test, using the terminal (or Windows "cmd") do this:
 * Execute the "yafaray-xml" indicating the full path to it, and some parameters as, for example:
 <path-to-yafaray-xml>/yafaray-xml -vl verbose -lvl verbose test01.xml
 -->
-<yafaray_xml format_version="4.0.0">
+<yafaray_container format_version="4.0.0">
 	<scene>
 		<scene_parameters name="Scene1">
 		</scene_parameters>
@@ -507,4 +507,4 @@ To test, using the terminal (or Windows "cmd") do this:
 			<multi_layer bval="false"/>
 		</output>
 	</film>
-</yafaray_xml>
+</yafaray_container>

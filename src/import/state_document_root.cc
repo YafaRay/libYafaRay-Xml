@@ -21,7 +21,6 @@
 #include "import/import_xml.h"
 #include "common/version.h"
 #include "common/version_build_info.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -29,12 +28,11 @@ namespace yafaray_xml
 
 void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 {
-
-	if(strcmp(element, "yafaray_xml") == 0)
+	if(strcmp(element, "yafaray_container") == 0)
 	{
 		if(!attrs || !attrs[0])
 		{
-			yafaray_printError(parser.getLogger(), "XMLParser: No attributes for yafaray_xml element, cannot check xml format version");
+			yafaray_printError(parser.getLogger(), "XMLParser: No attributes for yafaray_container element, cannot check xml format version");
 		}
 		else if(!strcmp(attrs[0], "format_version"))
 		{
@@ -57,16 +55,16 @@ void startElDocument(XmlParser &parser, const char *element, const char **attrs)
 					yafaray_printError(parser.getLogger(), ("XMLParser: The XML format version '" + format_version_string + "' is higher than the libYafaRay-Xml version '" + build_info::getVersionString() + "'").c_str());
 				}
 			}
-			else yafaray_printError(parser.getLogger(), "XMLParser: No format version specified for format_version attribute in yafaray_xml element, cannot check xml format version");
+			else yafaray_printError(parser.getLogger(), "XMLParser: No format version specified for format_version attribute in yafaray_container element, cannot check xml format version");
 		}
 		else
 		{
-			yafaray_printWarning(parser.getLogger(), "XMLParser: Attribute for yafaray_xml element does not match 'format_version'!");
+			yafaray_printWarning(parser.getLogger(), "XMLParser: Attribute for yafaray_container element does not match 'format_version'!");
 			return;
 		}
-		parser.pushState(startElYafaRayXml, endElYafaRayXml, element, attrs);
+		parser.pushState(startElYafaRayContainer, endElYafaRayContainer, element, attrs);
 	}
-	else yafaray_printWarning(parser.getLogger(), ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_xml' was expected, skipping...").c_str());
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: unexpected element <" + std::string(element) + ">, where the element 'yafaray_container' was expected, skipping...").c_str());
 }
 
 void endElDocument(XmlParser &parser, const char *)
@@ -74,9 +72,8 @@ void endElDocument(XmlParser &parser, const char *)
 	yafaray_printVerbose(parser.getLogger(), "XMLParser: Finished document");
 }
 
-void startElYafaRayXml(XmlParser &parser, const char *element, const char **attrs)
+void startElYafaRayContainer(XmlParser &parser, const char *element, const char **attrs)
 {
-
 	if(!strcmp(element, "scene"))
 	{
 		parser.pushState(startElScene, endElScene, element, attrs);
@@ -89,12 +86,12 @@ void startElYafaRayXml(XmlParser &parser, const char *element, const char **attr
 	{
 		parser.pushState(startElFilm, endElFilm, element, attrs);
 	}
-	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized YafaRayXml element '" + std::string(element) + "'").c_str());
+	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized YafaRayContainer element '" + std::string(element) + "'").c_str());
 }
 
-void endElYafaRayXml(XmlParser &parser, const char *element)
+void endElYafaRayContainer(XmlParser &parser, const char *element)
 {
-	if(strcmp(element, "yafaray_xml") == 0)
+	if(strcmp(element, "yafaray_container") == 0)
 	{
 		parser.popState();
 	}
