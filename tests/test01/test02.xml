@@ -9,232 +9,218 @@ To test, using the terminal (or Windows "cmd") do this:
 -->
 <yafaray_container format_version="4.0.0">
 	<scene>
-		<parameters name="Scene1">
+		<parameters name="scene">
 		</parameters>
 		<accelerator>
 			<type sval="yafaray-kdtree-original"/>
 		</accelerator>
 		<image name="Texture.005_image">
-			<color_space sval="sRGB"/>
-			<filename sval="test01_tex.tif"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
+			<filename sval="test01_tex.tif"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
+		</image>
+		<image name="Texture.004_image">
+			<filename sval="test01_tex.tga"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
+		</image>
+		<image name="Texture.003_image">
+			<filename sval="test01_tex.png"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
+		</image>
+		<image name="Texture.002_image">
+			<filename sval="test01_tex.jpg"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<type sval="Color"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
+		</image>
+		<image name="Texture.001_image">
+			<filename sval="test01_tex.hdr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<image_optimization sval="none"/>
+			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
+		</image>
+		<image name="Texture_image">
+			<filename sval="test01_tex.exr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
+			<image_optimization sval="none"/>
+			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
+			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<texture name="Texture.005">
 			<image_name sval="Texture.005_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
-		<image name="Texture.004_image">
-			<color_space sval="sRGB"/>
-			<filename sval="test01_tex.tga"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
-		</image>
 		<texture name="Texture.004">
 			<image_name sval="Texture.004_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
-		<image name="Texture.003_image">
-			<color_space sval="sRGB"/>
-			<filename sval="test01_tex.png"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
-		</image>
 		<texture name="Texture.003">
 			<image_name sval="Texture.003_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
-		<image name="Texture.002_image">
-			<color_space sval="sRGB"/>
-			<filename sval="test01_tex.jpg"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
-		</image>
 		<texture name="Texture.002">
 			<image_name sval="Texture.002_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
-		<image name="Texture.001_image">
-			<color_space sval="LinearRGB"/>
-			<filename sval="test01_tex.hdr"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
-		</image>
 		<texture name="Texture.001">
 			<image_name sval="Texture.001_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
-		<image name="Texture_image">
-			<color_space sval="LinearRGB"/>
-			<filename sval="test01_tex.exr"/>
-			<gamma fval="1"/>
-			<image_optimization sval="optimized"/>
-		</image>
 		<texture name="Texture">
 			<image_name sval="Texture_image"/>
-			<interpolate sval="bilinear"/>
 			<type sval="image"/>
 		</texture>
+		<material name="YafaRay_Default_Material">
+			<type sval="shinydiffusemat"/>
+		</material>
 		<material name="defaultMat">
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.008">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture.005"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="0.5"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
+			<diffuse_reflect fval="0.5"/> <!-- BSDF Diffuse component strength when not textured -->
 			<diffuse_shader sval="diff_layer0"/>
+			<mat_pass_index ival="2"/> <!-- Material index used in the material index render layer -->
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.007">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture.004"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="1"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
 			<diffuse_shader sval="diff_layer0"/>
+			<mat_pass_index ival="2"/> <!-- Material index used in the material index render layer -->
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.006">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture.003"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="0.6"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
+			<diffuse_reflect fval="0.6"/> <!-- BSDF Diffuse component strength when not textured -->
 			<diffuse_shader sval="diff_layer0"/>
+			<mat_pass_index ival="1"/> <!-- Material index used in the material index render layer -->
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.005">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture.002"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="0.4"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
+			<diffuse_reflect fval="0.4"/> <!-- BSDF Diffuse component strength when not textured -->
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.004">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<colfac fval="0.95"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture.001"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="1"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.003">
 			<shader_node>
-				<blend_mode sval="mix"/>
 				<colfac fval="0.95"/>
 				<input sval="map0"/>
-				<name sval="diff_layer0"/>
+				<name sval="diff_layer0"/> <!-- Name of the shader node -->
 				<type sval="layer"/>
 				<upper_color r="0.8" g="0.8" b="0.8" a="1"/>
 			</shader_node>
 			<shader_node>
 				<mapping sval="cube"/>
-				<name sval="map0"/>
+				<name sval="map0"/> <!-- Name of the shader node -->
 				<texco sval="orco"/>
 				<texture sval="Texture"/>
 				<type sval="texture_mapper"/>
 			</shader_node>
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="1"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
 			<diffuse_shader sval="diff_layer0"/>
 			<type sval="shinydiffusemat"/>
 		</material>
 		<material name="Material.002">
-			<color r="0.8" g="0.8" b="0.8" a="1"/>
-			<diffuse_reflect fval="1"/>
+			<color r="0.8" g="0.8" b="0.8" a="1"/> <!-- BSDF Diffuse component color -->
 			<type sval="shinydiffusemat"/>
 		</material>
 		<background>
-			<cast_shadows bval="true"/>
 			<color r="0.7" g="0.7" b="0.7" a="1"/>
-			<ibl bval="false"/>
-			<ibl_samples ival="3"/>
 			<power fval="0.5"/>
 			<type sval="constant"/>
 		</background>
 		<light name="Point">
-			<cast_shadows bval="true"/>
-			<color r="1" g="1" b="1" a="1"/>
 			<from x="5.27648" y="-4.88993" z="8.89514"/>
 			<power fval="72"/>
 			<type sval="pointlight"/>
 		</light>
 		<object>
 			<parameters name="Cube.005">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="5"/>
+				<object_index ival="5"/> <!-- Object Index for the object-index render pass -->
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-4.40469" y="1.44162" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="-4.40469" y="1.44162" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -244,7 +230,6 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="-2.40468" y="1.44162" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="-2.40468" y="3.44162" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="-2.40468" y="3.44162" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.008"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -254,13 +239,12 @@ To test, using the terminal (or Windows "cmd") do this:
 		</object>
 		<object>
 			<parameters name="Cube.004">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="4"/>
+				<object_index ival="4"/> <!-- Object Index for the object-index render pass -->
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="3.26859" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="3.26859" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -270,7 +254,6 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="5.26859" y="-0.393062" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="5.26859" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="5.26859" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.007"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -280,13 +263,12 @@ To test, using the terminal (or Windows "cmd") do this:
 		</object>
 		<object>
 			<parameters name="Cube.003">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="3"/>
+				<object_index ival="3"/> <!-- Object Index for the object-index render pass -->
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-0.635578" y="3.54144" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="-0.635578" y="3.54144" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -296,7 +278,6 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="3.54144" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="5.54144" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="5.54144" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.006"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -306,13 +287,12 @@ To test, using the terminal (or Windows "cmd") do this:
 		</object>
 		<object>
 			<parameters name="Cube.002">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="2"/>
+				<object_index ival="2"/> <!-- Object Index for the object-index render pass -->
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-0.635578" y="-0.393062" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="-0.635578" y="-0.393062" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -322,23 +302,27 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="-0.393062" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.005"/>
-			<f a="2" b="0" c="1" d="3"/>
-			<f a="3" b="7" c="6" d="2"/>
-			<f a="7" b="5" c="4" d="6"/>
-			<f a="0" b="4" c="5" d="1"/>
-			<f a="0" b="2" c="6" d="4"/>
-			<f a="5" b="7" c="3" d="1"/>
+			<f a="2" b="0" c="1"/>
+			<f a="2" b="1" c="3"/>
+			<f a="3" b="7" c="6"/>
+			<f a="3" b="6" c="2"/>
+			<f a="7" b="5" c="4"/>
+			<f a="7" b="4" c="6"/>
+			<f a="0" b="4" c="5"/>
+			<f a="0" b="5" c="1"/>
+			<f a="0" b="2" c="6"/>
+			<f a="0" b="6" c="4"/>
+			<f a="5" b="7" c="3"/>
+			<f a="5" b="3" c="1"/>
 		</object>
 		<object>
 			<parameters name="Cube.001">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="1"/>
+				<object_index ival="1"/> <!-- Object Index for the object-index render pass -->
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-0.635578" y="-3.81854" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="-0.635578" y="-3.81854" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -348,23 +332,26 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="-3.81854" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="-1.81854" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="-1.81854" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.004"/>
-			<f a="2" b="0" c="1" d="3"/>
-			<f a="3" b="7" c="6" d="2"/>
-			<f a="7" b="5" c="4" d="6"/>
-			<f a="0" b="4" c="5" d="1"/>
-			<f a="0" b="2" c="6" d="4"/>
-			<f a="5" b="7" c="3" d="1"/>
+			<f a="2" b="0" c="1"/>
+			<f a="2" b="1" c="3"/>
+			<f a="3" b="7" c="6"/>
+			<f a="3" b="6" c="2"/>
+			<f a="7" b="5" c="4"/>
+			<f a="7" b="4" c="6"/>
+			<f a="0" b="4" c="5"/>
+			<f a="0" b="5" c="1"/>
+			<f a="0" b="2" c="6"/>
+			<f a="0" b="6" c="4"/>
+			<f a="5" b="7" c="3"/>
+			<f a="5" b="3" c="1"/>
 		</object>
 		<object>
 			<parameters name="Cube">
-				<has_orco bval="true"/>
-				<has_uv bval="false"/>
+				<has_orco bval="1"/>
+				<light_name sval=""/>
 				<num_faces ival="6"/>
 				<num_vertices ival="8"/>
-				<object_index ival="0"/>
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-5.01096" y="-1.94285" z="1.00136e-05" ox="-1" oy="-1" oz="-1"/>
 			<p x="-5.01096" y="-1.94285" z="2.00001" ox="-1" oy="-1" oz="1"/>
@@ -374,137 +361,64 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="-3.01096" y="-1.94285" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="-3.01096" y="0.0571451" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="-3.01096" y="0.0571451" z="2.00001" ox="1" oy="1" oz="1"/>
-			<material_ref sval="Material.003"/>
-			<f a="2" b="0" c="1" d="3"/>
-			<f a="3" b="7" c="6" d="2"/>
-			<f a="7" b="5" c="4" d="6"/>
-			<f a="0" b="4" c="5" d="1"/>
-			<f a="0" b="2" c="6" d="4"/>
-			<f a="5" b="7" c="3" d="1"/>
+			<f a="2" b="0" c="1"/>
+			<f a="2" b="1" c="3"/>
+			<f a="3" b="7" c="6"/>
+			<f a="3" b="6" c="2"/>
+			<f a="7" b="5" c="4"/>
+			<f a="7" b="4" c="6"/>
+			<f a="0" b="4" c="5"/>
+			<f a="0" b="5" c="1"/>
+			<f a="0" b="2" c="6"/>
+			<f a="0" b="6" c="4"/>
+			<f a="5" b="7" c="3"/>
+			<f a="5" b="3" c="1"/>
 		</object>
 		<object>
 			<parameters name="Plane">
-				<has_orco bval="false"/>
-				<has_uv bval="false"/>
+				<light_name sval=""/>
 				<num_faces ival="1"/>
 				<num_vertices ival="4"/>
-				<object_index ival="0"/>
 				<type sval="mesh"/>
-				<visibility sval="normal"/>
 			</parameters>
 			<p x="-10" y="-10" z="0"/>
 			<p x="10" y="-10" z="0"/>
 			<p x="-10" y="10" z="0"/>
 			<p x="10" y="10" z="0"/>
-			<material_ref sval="Material.002"/>
-			<f a="0" b="1" c="3" d="2"/>
+			<f a="0" b="1" c="3"/>
+			<f a="0" b="3" c="2"/>
 		</object>
+<!--		<instance>
+			<object_ref name="Cube.005"/>
+			<object_ref name="Cube.004"/>
+			<matrix time="0" m00="1" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
+			<matrix time="0.5" m00="11" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
+			<matrix time="1" m00="21" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
+		</instance>-->
 	</scene>
 	<surface_integrator>
-		<parameters name="SceneIntegrator1">
-			<type sval="directlighting"/>
-			<bg_transp bval="false"/>
-			<bg_transp_refract bval="false"/>
-			<caustics bval="false"/>
-			<do_AO bval="false"/>
-			<AO_color r="0.9" g="0.9" b="0.9" a="1"/>
-			<AO_distance fval="1"/>
-			<AO_samples ival="32"/>
-			<raydepth ival="8"/>
-			<shadowDepth ival="2"/>
-			<time_forced bval="false"/>
-			<time_forced_value fval="0"/>
-			<transpShad bval="false"/>
+		<parameters name="surface integrator">
+			<diffuse_photons ival="10000000"/> <!-- Number of diffuse photons -->
+			<fg_min_pathlen fval="0.1"/> <!-- Minimum distance to terminate path tracing (unless gatherBounces is reached). If not specified it defaults to the value set in 'diffuse_radius' -->
+			<raydepth ival="2"/> <!-- Ray depth -->
+			<shadowDepth ival="2"/> <!-- Shadow depth for transparent shadows -->
+			<type sval="photonmapping"/>
 		</parameters>
 	</surface_integrator>
 	<film>
-		<parameters name="Film1">
-			<width ival="480"/>
-			<height ival="270"/>
-			<filter_type sval="gauss"/>
+		<parameters name="film_1">
+			<AA_inc_samples ival="3"/> <!-- Sample count for additional passes -->
+			<AA_minsamples ival="3"/> <!-- Sample count for first pass -->
+			<height ival="270"/> <!-- Height of rendered image -->
+			<width ival="480"/> <!-- Width of rendered image -->
 		</parameters>
-		<camera name="Camera">
-			<focal fval="1.09375"/>
-			<from x="8.64791" y="-7.22615" z="8.1295"/>
-			<resx ival="480"/>
-			<resy ival="270"/>
-			<to x="8.03447" y="-6.65603" z="7.58301"/>
-			<type sval="perspective"/>
-			<up x="8.25644" y="-6.8447" z="8.9669"/>
-		</camera>
-		<layer>
-			<exported_image_name sval="Combined"/>
-			<exported_image_type sval="ColorAlpha"/>
-			<image_type sval="ColorAlpha"/>
-			<type sval="combined"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Depth"/>
-			<exported_image_type sval="Gray"/>
-			<image_type sval="Gray"/>
-			<type sval="z-depth-norm"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Vector"/>
-			<exported_image_type sval="ColorAlpha"/>
-			<image_type sval="ColorAlpha"/>
-			<type sval="mat-index-auto"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Normal"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="debug-normal-smooth"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="UV"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="obj-index-auto"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Mist"/>
-			<exported_image_type sval="Gray"/>
-			<image_type sval="Gray"/>
-			<type sval="mist"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Diffuse"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="diffuse"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="AO"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="ao-clay"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Env"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="env"/>
-		</layer>
-		<layer>
-			<exported_image_name sval="Shadow"/>
-			<exported_image_type sval="Color"/>
-			<image_type sval="Color"/>
-			<type sval="shadow"/>
-		</layer>
-		<output name="xml_file_output">
-			<badge_comment sval="Tests for texture formats, render passes, denoise, logs and image film saving."/>
-			<badge_position sval="top"/>
-			<badge_title sval="YafaRay Test01"/>
-			<color_space sval="sRGB"/>
-<!--			<denoise_enabled bval="true"/>
-			<denoise_h_col ival="5"/>
-			<denoise_h_lum ival="5"/>
-			<denoise_mix fval="0.8"/>-->
-			<image_path sval="test01 - 001.png"/>
-			<logging_save_html bval="true"/>
-			<logging_save_txt bval="true"/>
-			<multi_layer bval="false"/>
-		</output>
+	</film>
+	<film>
+		<parameters name="film_2">
+			<AA_inc_samples ival="3"/> <!-- Sample count for additional passes -->
+			<AA_minsamples ival="3"/> <!-- Sample count for first pass -->
+			<height ival="135"/> <!-- Height of rendered image -->
+			<width ival="240"/> <!-- Width of rendered image -->
+		</parameters>
 	</film>
 </yafaray_container>

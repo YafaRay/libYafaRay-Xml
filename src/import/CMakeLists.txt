@@ -21,9 +21,8 @@ target_sources(libyafaray4_xml
 		import_xml.cc
 		parse_param.cc
 		state_document_root.cc
-		state_dummy.cc
 		state_film.cc
-		state_geometry.cc
+		state_object.cc
 		state_instance.cc
 		state_param_map.cc
 		state_scene.cc

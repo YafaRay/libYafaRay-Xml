@@ -24,34 +24,55 @@
 namespace yafaray_xml
 {
 
-void endElCreateInstance(XmlParser &parser, const char *element)
+void startElInstance(XmlParser &parser, const char *element, const char **attrs)
 {
-	if(!strcmp(element, "createInstance"))
+	if(!strcmp(element, "object_ref"))
+	{
+		std::string object_name;
+		for(int n = 0; attrs[n]; n++)
+		{
+			if(!strcmp(attrs[n], "name"))
+			{
+				object_name = attrs[n + 1];
+			}
+		}
+		size_t object_id;
+		yafaray_getObjectId(parser.getScene(), &object_id, object_name.c_str());
+		yafaray_addInstanceObject(parser.getScene(), parser.getInstanceIdCurrent(), object_id);
+	}
+	else if(!strcmp(element, "instance_ref"))
+	{
+		unsigned int base_instance_id = -1;
+		for(int n = 0; attrs[n]; n++)
+		{
+			if(!strcmp(attrs[n], "id"))
+			{
+				base_instance_id = atoi(attrs[n + 1]);
+			}
+		}
+		yafaray_addInstanceOfInstance(parser.getScene(), parser.getInstanceIdCurrent(), base_instance_id);
+	}
+	else if(!strcmp(element, "matrix"))
+	{
+		for(int n = 0; attrs[n]; n++)
+		{
+			if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(static_cast<float>(atof(attrs[n + 1])));
+		}
+		parser.pushState(startElAddMatrix, endElAddMatrix, element, attrs);
+	}
+}
+
+void endElInstance(XmlParser &parser, const char *element)
+{
+	if(!strcmp(element, "instance"))
 	{
 		parser.popState();
 	}
 }
 
-void endElAddInstanceObject(XmlParser &parser, const char *element)
+void startElAddMatrix(XmlParser &parser, const char *element, const char **attrs)
 {
-	if(!strcmp(element, "addInstanceObject"))
-	{
-		parser.popState();
-	}
-}
-
-void endElAddInstanceOfInstance(XmlParser &parser, const char *element)
-{
-	if(!strcmp(element, "addInstanceOfInstance"))
-	{
-		parser.popState();
-	}
-}
-
-void startElAddInstanceMatrix(XmlParser &parser, const char *element, const char **attrs)
-{
-
-	if(!strcmp(element, "transform"))
+	if(!strcmp(element, "matrix"))
 	{
 		double m[4 * 4];
 		for(int n = 0; attrs[n]; ++n)
@@ -67,9 +88,9 @@ void startElAddInstanceMatrix(XmlParser &parser, const char *element, const char
 	}
 }
 
-void endElAddInstanceMatrix(XmlParser &parser, const char *element)
+void endElAddMatrix(XmlParser &parser, const char *element)
 {
-	if(!strcmp(element, "addInstanceMatrix"))
+	if(!strcmp(element, "matrix"))
 	{
 		parser.popState();
 	}

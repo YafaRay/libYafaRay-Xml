@@ -32,8 +32,8 @@ namespace yafaray_xml
 class XmlParser;
 enum ColorSpace : int;
 
-typedef void (*StartElementCb_t)(XmlParser &p, const char *element, const char **attrs);
-typedef void (*EndElementCb_t)(XmlParser &p, const char *element);
+typedef void (*StartElementCb_t)(XmlParser &parser, const char *element, const char **attrs);
+typedef void (*EndElementCb_t)(XmlParser &parser, const char *element);
 
 struct ParserState
 {
@@ -101,34 +101,36 @@ class XmlParser final
 void parseParam(yafaray_ParamMap *yafaray_param_map, const char **attrs, const char *param_name);
 
 // state callbacks:
-void startElDocument(XmlParser &p, const char *element, const char **attrs);
-void endElDocument(XmlParser &p, const char *element);
-void startElYafaRayContainer(XmlParser &p, const char *element, const char **attrs);
-void endElYafaRayContainer(XmlParser &p, const char *element);
-void startElScene(XmlParser &p, const char *element, const char **attrs);
-void endElScene(XmlParser &p, const char *element);
-void startElSurfaceIntegrator(XmlParser &p, const char *element, const char **attrs);
-void endElSurfaceIntegrator(XmlParser &p, const char *element);
-void startElFilm(XmlParser &p, const char *element, const char **attrs);
-void endElFilm(XmlParser &p, const char *element);
-void startElObject(XmlParser &p, const char *element, const char **attrs);
-void endElObject(XmlParser &p, const char *element);
-void startElParammap(XmlParser &p, const char *element, const char **attrs);
-void endElParammap(XmlParser &parser, const char *element);
-void startElShaderNode(XmlParser &p, const char *element, const char **attrs);
-void endElShaderNode(XmlParser &p, const char *element);
-void startElAddInstanceObject(XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceObject(XmlParser &p, const char *element);
-void startElCreateInstance(XmlParser &p, const char *element, const char **attrs);
-void endElCreateInstance(XmlParser &p, const char *element);
-void startElAddInstanceOfInstance(XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceOfInstance(XmlParser &p, const char *element);
-void startElAddInstanceMatrix(XmlParser &p, const char *element, const char **attrs);
-void endElAddInstanceMatrix(XmlParser &p, const char *element);
-void startElInstanceMatrixTransform(XmlParser &p, const char *element, const char **attrs);
-void endElInstanceMatrixTransform(XmlParser &p, const char *element);
-void startElDummy(XmlParser &p, const char *element, const char **attrs);
-void endElDummy(XmlParser &p, const char *element);
+void startElDocument(XmlParser &parser, const char *element, const char **attrs);
+void endElDocument(XmlParser &parser, const char *element);
+void startElYafaRayContainer(XmlParser &parser, const char *element, const char **attrs);
+void endElYafaRayContainer(XmlParser &parser, const char *element);
+void startElScene(XmlParser &parser, const char *element, const char **attrs);
+void endElScene(XmlParser &parser, const char *element);
+void startElSceneParameters(XmlParser &parser, const char *element, const char **attrs);
+void endElSceneParameters(XmlParser &parser, const char *element);
+void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char **attrs);
+void endElSurfaceIntegrator(XmlParser &parser, const char *element);
+void startElSurfaceIntegratorParameters(XmlParser &parser, const char *element, const char **attrs);
+void endElSurfaceIntegratorParameters(XmlParser &parser, const char *element);
+void startElFilm(XmlParser &parser, const char *element, const char **attrs);
+void endElFilm(XmlParser &parser, const char *element);
+void startElFilmParameters(XmlParser &parser, const char *element, const char **attrs);
+void endElFilmParameters(XmlParser &parser, const char *element);
+void startElObject(XmlParser &parser, const char *element, const char **attrs);
+void endElObject(XmlParser &parser, const char *element);
+void startElObjectParameters(XmlParser &parser, const char *element, const char **attrs);
+void endElObjectParameters(XmlParser &parser, const char *element);
+void startElInstance(XmlParser &parser, const char *element, const char **attrs);
+void endElInstance(XmlParser &parser, const char *element);
+void startElAddMatrix(XmlParser &parser, const char *element, const char **attrs);
+void endElAddMatrix(XmlParser &parser, const char *element);
+void startElParamMap(XmlParser &parser, const char *element, const char **attrs);
+void endElParamMap(XmlParser &parser, const char *element);
+void startElShaderNode(XmlParser &parser, const char *element, const char **attrs);
+void endElShaderNode(XmlParser &parser, const char *element);
+void startElSmooth(XmlParser &parser, const char *element, const char **attrs);
+void endElSmooth(XmlParser &parser, const char *element);
 
 } //namespace yafaray_xml
 

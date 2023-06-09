@@ -19,7 +19,6 @@
  */
 
 #include "import/import_xml.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -27,10 +26,13 @@ namespace yafaray_xml
 
 void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char **attrs)
 {
-
-	if(!strcmp(element, "surface_integrator_parameters") || !strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
+	if(!strcmp(element, "parameters"))
 	{
-		parser.pushState(startElParammap, endElParammap, element, attrs);
+		parser.pushState(startElSurfaceIntegratorParameters, endElSurfaceIntegratorParameters, element, attrs);
+	}
+	else if(!strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
+	{
+		parser.pushState(startElParamMap, endElParamMap, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
@@ -40,6 +42,22 @@ void endElSurfaceIntegrator(XmlParser &parser, const char *element)
 	if(strcmp(element, "surface_integrator") == 0)
 	{
 		parser.popState();
+	}
+}
+
+void startElSurfaceIntegratorParameters(XmlParser &parser, const char *element, const char **attrs)
+{
+	parseParam(parser.getParamMap(), attrs, element);
+}
+
+void endElSurfaceIntegratorParameters(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "parameters") == 0)
+	{
+		parser.createSurfaceIntegrator(parser.stateElementName().c_str());
+		parser.popState();
+		parser.clearParamMap();
+		parser.clearParamMapList();
 	}
 }
 

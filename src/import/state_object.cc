@@ -20,7 +20,6 @@
 
 #include "import/import_xml.h"
 #include "common/vec3f.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -31,7 +30,6 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 
 void startElObject(XmlParser &parser, const char *element, const char **attrs)
 {
-
 	if(!strcmp(element, "p"))
 	{
 		Vec3f p{0.f, 0.f, 0.f};
@@ -108,15 +106,15 @@ void startElObject(XmlParser &parser, const char *element, const char **attrs)
 		}
 		yafaray_addUv(parser.getScene(), parser.getObjectIdCurrent(), u, v);
 	}
-	else if(!strcmp(element, "set_material"))
+	else if(!strcmp(element, "material_ref"))
 	{
 		size_t material_id;
 		yafaray_getMaterialId(parser.getScene(), &material_id, attrs[1]);
 		parser.setMaterialIdCurrent(material_id);
 	}
-	else if(!strcmp(element, "object_parameters"))
+	else if(!strcmp(element, "parameters"))
 	{
-		parser.pushState(startElParammap, endElParammap, element, attrs);
+		parser.pushState(startElObjectParameters, endElObjectParameters, element, attrs);
 	}
 }
 
@@ -126,6 +124,24 @@ void endElObject(XmlParser &parser, const char *element)
 	{
 		yafaray_initObject(parser.getScene(), parser.getObjectIdCurrent(), parser.getMaterialIdCurrent());
 		parser.popState();
+	}
+}
+
+void startElObjectParameters(XmlParser &parser, const char *element, const char **attrs)
+{
+	parseParam(parser.getParamMap(), attrs, element);
+}
+
+void endElObjectParameters(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "parameters") == 0)
+	{
+		size_t object_id;
+		yafaray_createObject(parser.getScene(), &object_id, parser.stateElementName().c_str(), parser.getParamMap());
+		parser.setObjectIdCurrent(object_id);
+		parser.popState();
+		parser.clearParamMap();
+		parser.clearParamMapList();
 	}
 }
 
@@ -186,6 +202,15 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 		}
 	}
 	return (number_of_components_read == 3 || number_of_components_read == 4);
+}
+
+void startElSmooth(XmlParser &parser, const char *element, const char **attrs)
+{
+}
+
+void endElSmooth(XmlParser &parser, const char *)
+{
+	parser.popState();
 }
 
 } //namespace yafaray_xml

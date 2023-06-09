@@ -19,7 +19,6 @@
  */
 
 #include "import/import_xml.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -27,10 +26,13 @@ namespace yafaray_xml
 
 void startElFilm(XmlParser &parser, const char *element, const char **attrs)
 {
-
-	if(!strcmp(element, "film_parameters") || !strcmp(element, "camera") || !strcmp(element, "output") || !strcmp(element, "layer"))
+	if(!strcmp(element, "parameters"))
 	{
-		parser.pushState(startElParammap, endElParammap, element, attrs);
+		parser.pushState(startElFilmParameters, endElFilmParameters, element, attrs);
+	}
+	else if(!strcmp(element, "camera") || !strcmp(element, "output") || !strcmp(element, "layer"))
+	{
+		parser.pushState(startElParamMap, endElParamMap, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
@@ -40,6 +42,22 @@ void endElFilm(XmlParser &parser, const char *element)
 	if(strcmp(element, "film") == 0)
 	{
 		parser.popState();
+	}
+}
+
+void startElFilmParameters(XmlParser &parser, const char *element, const char **attrs)
+{
+	parseParam(parser.getParamMap(), attrs, element);
+}
+
+void endElFilmParameters(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "parameters") == 0)
+	{
+		parser.createFilm(parser.stateElementName().c_str());
+		parser.popState();
+		parser.clearParamMap();
+		parser.clearParamMapList();
 	}
 }
 

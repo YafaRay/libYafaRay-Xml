@@ -19,13 +19,12 @@
  */
 
 #include "import/import_xml.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
 {
 
-void startElParammap(XmlParser &parser, const char *element, const char **attrs)
+void startElParamMap(XmlParser &parser, const char *element, const char **attrs)
 {
 	if(!strcmp(element, "shader_node"))
 	{
@@ -35,23 +34,20 @@ void startElParammap(XmlParser &parser, const char *element, const char **attrs)
 	parseParam(parser.getParamMap(), attrs, element);
 }
 
-void endElParammap(XmlParser &parser, const char *element)
+void endElParamMap(XmlParser &parser, const char *element)
 {
 	//yafaray_printDebug(parser.getLogger(), parser.getScene(), parser.getRenderer(), parser.getFilm(), ("##### endElParammap, element='" + std::string(element) + "', element_name='" + std::string(parser.stateElementName()) + "'").c_str());
 	const bool exit_state = (parser.currLevel() == parser.stateLevel());
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
-		if(element_name.empty() && strcmp(element, "createInstance") != 0 && strcmp(element, "addInstanceObject") != 0 && strcmp(element, "addInstanceOfInstance") != 0 && strcmp(element, "addInstanceMatrix") != 0 && strcmp(element, "background") != 0 && strcmp(element, "surface_integrator") != 0 && strcmp(element, "volume_integrator") != 0 && strcmp(element, "layer") != 0 && strcmp(element, "accelerator") != 0)
+		if(element_name.empty() && strcmp(element, "background") != 0 && strcmp(element, "volume_integrator") != 0 && strcmp(element, "layer") != 0 && strcmp(element, "accelerator") != 0)
 		{
 			yafaray_printWarning(parser.getLogger(), ("XMLParser: No name for element '" + std::string(element) + "' available!").c_str());
 		}
 		else
 		{
-			if(!strcmp(element, "scene_parameters")) parser.createScene(element_name.c_str());
-			else if(!strcmp(element, "surface_integrator_parameters")) parser.createSurfaceIntegrator(element_name.c_str());
-			else if(!strcmp(element, "film_parameters")) parser.createFilm(element_name.c_str());
-			else if(!strcmp(element, "material"))
+			if(!strcmp(element, "material"))
 			{
 				size_t material_id;
 				yafaray_createMaterial(parser.getScene(), &material_id, element_name.c_str(), parser.getParamMap(), parser.getParamMapList());
@@ -65,13 +61,7 @@ void endElParammap(XmlParser &parser, const char *element)
 			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), element_name.c_str(), parser.getParamMap());
 			else if(!strcmp(element, "accelerator")) yafaray_setSceneAcceleratorParams(parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "background")) yafaray_defineBackground(parser.getScene(), parser.getParamMap());
-			else if(!strcmp(element, "object_parameters"))
-			{
-				size_t object_id;
-				yafaray_createObject(parser.getScene(), &object_id, element_name.c_str(), parser.getParamMap());
-				parser.setObjectIdCurrent(object_id);
-			}
-			else if(!strcmp(element, "volumeregion")) yafaray_createVolumeRegion(parser.getScene(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "volume_region")) yafaray_createVolumeRegion(parser.getScene(), element_name.c_str(), parser.getParamMap());
 			else if(!strcmp(element, "layer")) { yafaray_defineLayer(parser.getFilm(), parser.getParamMap()); }
 			else if(!strcmp(element, "output")) yafaray_createOutput(parser.getFilm(), element_name.c_str(), parser.getParamMap());
 			else yafaray_printWarning(parser.getLogger(), ("XMLParser: Unexpected end-tag of element '" + std::string(element) + "'!").c_str());

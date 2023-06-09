@@ -19,7 +19,6 @@
  */
 
 #include "import/import_xml.h"
-#include "common/element_parser_utils.h"
 #include <cstring>
 
 namespace yafaray_xml
@@ -27,90 +26,37 @@ namespace yafaray_xml
 
 void startElScene(XmlParser &parser, const char *element, const char **attrs)
 {
-
-	if(!strcmp(element, "scene_parameters") || !strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "volumeregion") || !strcmp(element, "image") || !strcmp(element, "light") || !strcmp(element, "background"))
+	if(!strcmp(element, "parameters"))
 	{
-		parser.pushState(startElParammap, endElParammap, element, attrs);
+		parser.pushState(startElSceneParameters, endElSceneParameters, element, attrs);
+	}
+	else if(!strcmp(element, "accelerator") || !strcmp(element, "material") || !strcmp(element, "light") || !strcmp(element, "texture") || !strcmp(element, "volume_region") || !strcmp(element, "image") || !strcmp(element, "light") || !strcmp(element, "background"))
+	{
+		parser.pushState(startElParamMap, endElParamMap, element, attrs);
 	}
 	else if(!strcmp(element, "object"))
 	{
 		parser.pushState(startElObject, endElObject, element, attrs);
 	}
+	else if(!strcmp(element, "instance"))
+	{
+		parser.setInstanceIdCurrent(yafaray_createInstance(parser.getScene()));
+		parser.pushState(startElInstance, endElInstance, element, attrs);
+	}
 	else if(!strcmp(element, "smooth"))
 	{
 		double angle = 181.0;
-		std::string element_name;
+		std::string object_name;
 		for(int n = 0; attrs[n]; ++n)
 		{
-			if(!strcmp(attrs[n], "object_name")) element_name = attrs[n + 1];
+			if(!strcmp(attrs[n], "object_name")) object_name = attrs[n + 1];
 			else if(!strcmp(attrs[n],"angle")) angle = atof(attrs[n + 1]);
 		}
-		//not optimal to take ID blind...
-		//yafaray_startObjects();
 		size_t object_id;
-		yafaray_getObjectId(parser.getScene(), &object_id, element_name.c_str());
+		yafaray_getObjectId(parser.getScene(), &object_id, object_name.c_str());
 		bool success = yafaray_smoothObjectMesh(parser.getScene(), object_id, angle);
-		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with object_name='" + element_name + "', angle = " + std::to_string(angle)).c_str());
-		//yafaray_endObjects();
-		parser.pushState(startElDummy, endElDummy, element, attrs);
-	}
-	else if(!strcmp(element, "accelerator"))
-	{
-		parser.pushState(startElParammap, endElParammap, element, attrs);
-	}
-	else if(!strcmp(element, "createInstance"))
-	{
-		parser.setInstanceIdCurrent(yafaray_createInstance(parser.getScene()));
-		parser.pushState(nullptr, endElCreateInstance, element, attrs);
-	}
-	else if(!strcmp(element, "addInstanceObject"))
-	{
-		std::string base_object_name;
-		for(int n = 0; attrs[n]; n++)
-		{
-			if(!strcmp(attrs[n], "instance_id"))
-			{
-				parser.setInstanceIdCurrent(atoi(attrs[n + 1]));
-			}
-			else if(!strcmp(attrs[n], "base_object_name"))
-			{
-				base_object_name = attrs[n + 1];
-			}
-		}
-		size_t object_id;
-		yafaray_getObjectId(parser.getScene(), &object_id, base_object_name.c_str());
-		yafaray_addInstanceObject(parser.getScene(), parser.getInstanceIdCurrent(), object_id);
-		parser.pushState(nullptr, endElAddInstanceObject, element, attrs);
-	}
-	else if(!strcmp(element, "addInstanceOfInstance"))
-	{
-		unsigned int instance_id = -1;
-		unsigned int base_instance_id = -1;
-		for(int n = 0; attrs[n]; n++)
-		{
-			if(!strcmp(attrs[n], "instance_id"))
-			{
-				instance_id = atoi(attrs[n + 1]);
-			}
-			else if(!strcmp(attrs[n], "base_instance_id"))
-			{
-				base_instance_id = atoi(attrs[n + 1]);
-			}
-		}
-		yafaray_addInstanceOfInstance(parser.getScene(), instance_id, base_instance_id);
-		parser.pushState(nullptr, endElAddInstanceOfInstance, element, attrs);
-	}
-	else if(!strcmp(element, "addInstanceMatrix"))
-	{
-		for(int n = 0; attrs[n]; n++)
-		{
-			if(!strcmp(attrs[n], "instance_id"))
-			{
-				parser.setInstanceIdCurrent(atoi(attrs[n + 1]));
-			}
-			else if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(static_cast<float>(atof(attrs[n + 1])));
-		}
-		parser.pushState(startElAddInstanceMatrix, endElAddInstanceMatrix, element, attrs);
+		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with object_name='" + object_name + "', angle = " + std::to_string(angle)).c_str());
+		parser.pushState(startElSmooth, endElSmooth, element, attrs);
 	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
@@ -120,6 +66,22 @@ void endElScene(XmlParser &parser, const char *element)
 	if(strcmp(element, "scene") == 0)
 	{
 		parser.popState();
+	}
+}
+
+void startElSceneParameters(XmlParser &parser, const char *element, const char **attrs)
+{
+	parseParam(parser.getParamMap(), attrs, element);
+}
+
+void endElSceneParameters(XmlParser &parser, const char *element)
+{
+	if(strcmp(element, "parameters") == 0)
+	{
+		parser.createScene(parser.stateElementName().c_str());
+		parser.popState();
+		parser.clearParamMap();
+		parser.clearParamMapList();
 	}
 }
 
