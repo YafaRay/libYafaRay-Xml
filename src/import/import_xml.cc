@@ -157,19 +157,22 @@ void XmlParser::popState()
 void XmlParser::createScene(const char *name)
 {
 	yafaray_scene_ = yafaray_createScene(yafaray_logger_, name);
+	yafaray_addSceneToContainer(yafaray_container_, yafaray_scene_);
 }
 
 void XmlParser::createSurfaceIntegrator(const char *name)
 {
 	yafaray_surface_integrator_ = yafaray_createSurfaceIntegrator(yafaray_logger_, name, yafaray_param_map_);
+	yafaray_addSurfaceIntegratorToContainer(yafaray_container_, yafaray_surface_integrator_);
 }
 
 void XmlParser::createFilm(const char *name)
 {
 	yafaray_film_ = yafaray_createFilm(yafaray_logger_, yafaray_surface_integrator_, name, yafaray_param_map_);
+	yafaray_addFilmToContainer(yafaray_container_, yafaray_film_);
 }
 
-std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
+std::tuple<bool, yafaray_Container *> XmlParser::parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept
 {
 	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_file_path || xmlSAXUserParseFile(&my_handler_global, &parser, xml_file_path) < 0)
@@ -177,10 +180,10 @@ std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> X
 		yafaray_printError(parser.getLogger(), ("XMLParser: Error parsing the file " + std::string(xml_file_path)).c_str());
 		return {};
 	}
-	else return {true, parser.getScene(), parser.getSurfaceIntegrator(), parser.getFilm()};
+	else return {true, parser.getContainer()};
 }
 
-std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept
+std::tuple<bool, yafaray_Container *> XmlParser::parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept
 {
 	XmlParser parser{yafaray_logger, input_color_space, input_gamma};
 	if(!xml_buffer || xml_buffer_size <= 0 || xmlSAXUserParseMemory(&my_handler_global, &parser, xml_buffer, xml_buffer_size) < 0)
@@ -188,7 +191,7 @@ std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> X
 		yafaray_printError(parser.getLogger(), "XMLParser: Error parsing a memory buffer");
 		return {};
 	}
-	else return {true, parser.getScene(), parser.getSurfaceIntegrator(), parser.getFilm()};
+	else return {true, parser.getContainer()};
 }
 
 std::string XmlParser::printStateStack() const

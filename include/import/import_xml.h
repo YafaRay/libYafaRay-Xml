@@ -60,6 +60,7 @@ class XmlParser final
 		[[nodiscard]] int currLevel() const { return level_; }
 		[[nodiscard]] int stateLevel() const { return current_ ? current_->level_ : -1; }
 		[[nodiscard]] yafaray_Logger *getLogger() { return yafaray_logger_; }
+		[[nodiscard]] yafaray_Container *getContainer() { return yafaray_container_; }
 		void createScene(const char *name);
 		[[nodiscard]] yafaray_Scene *getScene() { return yafaray_scene_; }
 		void createSurfaceIntegrator(const char *name);
@@ -79,14 +80,15 @@ class XmlParser final
 		void setMaterialIdCurrent(size_t material_id_current) { material_id_current_ = material_id_current; }
 		[[nodiscard]] float getTimeCurrent() const { return time_current_; }
 		void setTimeCurrent(float time_current) { time_current_ = time_current; }
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept;
-		[[nodiscard]] static std::tuple<bool, yafaray_Scene *, yafaray_SurfaceIntegrator *, yafaray_Film *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Container *> parseXmlFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma) noexcept;
+		[[nodiscard]] static std::tuple<bool, yafaray_Container *> parseXmlMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma) noexcept;
 
 	private:
 		std::vector<ParserState> state_stack_;
 		ParserState *current_ = nullptr;
 		int level_ = 0;
 		yafaray_Logger *yafaray_logger_ = nullptr;
+		yafaray_Container *yafaray_container_{yafaray_createContainer()};
 		yafaray_Scene *yafaray_scene_ = nullptr;
 		yafaray_SurfaceIntegrator *yafaray_surface_integrator_ = nullptr;
 		yafaray_Film *yafaray_film_ = nullptr;

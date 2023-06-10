@@ -23,21 +23,13 @@
 
 yafaray_Container *yafaray_xml_ParseFile(yafaray_Logger *yafaray_logger, const char *xml_file_path, const char *input_color_space, float input_gamma)
 {
-	auto [result, scene, surface_integrator, film]{yafaray_xml::XmlParser::parseXmlFile(yafaray_logger, xml_file_path, input_color_space, input_gamma)};
-	auto container{yafaray_createContainer()};
-	yafaray_addSceneToContainer(container, scene);
-	yafaray_addSurfaceIntegratorToContainer(container, surface_integrator);
-	yafaray_addFilmToContainer(container, film);
+	auto [result, container]{yafaray_xml::XmlParser::parseXmlFile(yafaray_logger, xml_file_path, input_color_space, input_gamma)};
 	return container;
 }
 
 yafaray_Container *yafaray_xml_ParseMemory(yafaray_Logger *yafaray_logger, const char *xml_buffer, int xml_buffer_size, const char *input_color_space, float input_gamma)
 {
-	auto [result, scene, surface_integrator, film]{yafaray_xml::XmlParser::parseXmlMemory(yafaray_logger, xml_buffer, xml_buffer_size, input_color_space, input_gamma)};
-	auto container{yafaray_createContainer()};
-	yafaray_addSceneToContainer(container, scene);
-	yafaray_addSurfaceIntegratorToContainer(container, surface_integrator);
-	yafaray_addFilmToContainer(container, film);
+	auto [result, container]{yafaray_xml::XmlParser::parseXmlMemory(yafaray_logger, xml_buffer, xml_buffer_size, input_color_space, input_gamma)};
 	return container;
 }
 
