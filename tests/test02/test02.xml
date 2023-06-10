@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
-# YafaRay v4 Test01
-# Tests for texture formats, render layers, denoise, logs and image film saving.
+# YafaRay v4 Test02
+# Tests for instances.
 To test, using the terminal (or Windows "cmd") do this:
 * Using "cd", enter the directory "test01" where this test01.xml file resides
 * Execute the "yafaray-xml" indicating the full path to it, and some parameters as, for example:
@@ -15,38 +15,38 @@ To test, using the terminal (or Windows "cmd") do this:
 			<type sval="yafaray-kdtree-original"/>
 		</accelerator>
 		<image name="Texture.005_image">
-			<filename sval="test01_tex.tif"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.tif"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
 			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<image name="Texture.004_image">
-			<filename sval="test01_tex.tga"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.tga"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
 			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<image name="Texture.003_image">
-			<filename sval="test01_tex.png"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.png"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
 			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<image name="Texture.002_image">
-			<filename sval="test01_tex.jpg"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.jpg"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<type sval="Color"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
 			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<image name="Texture.001_image">
-			<filename sval="test01_tex.hdr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.hdr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<image_optimization sval="none"/>
 			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
 			<width ival="300"/> <!-- Image width (overriden by the loaded image type if 'filename' is used) -->
 		</image>
 		<image name="Texture_image">
-			<filename sval="test01_tex.exr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
+			<filename sval="tex.exr"/> <!-- File path when loading the image from a file. Leave blank when creating a new image from RAM -->
 			<height ival="300"/> <!-- Image height (overriden by the loaded image type if 'filename' is used) -->
 			<image_optimization sval="none"/>
 			<type sval="ColorAlpha"/> <!-- Image type (overriden by the loaded image type if 'filename' is used) -->
@@ -412,6 +412,19 @@ To test, using the terminal (or Windows "cmd") do this:
 			<height ival="270"/> <!-- Height of rendered image -->
 			<width ival="480"/> <!-- Width of rendered image -->
 		</parameters>
+		<camera>
+			<focal fval="1.09375"/>
+			<from x="8.64791" y="-7.22615" z="8.1295"/>
+			<resx ival="480"/> <!-- Camera resolution X -->
+			<resy ival="270"/> <!-- Camera resolution Y -->
+			<to x="8.03447" y="-6.65603" z="7.58301"/>
+			<type sval="perspective"/>
+			<up x="8.25644" y="-6.8447" z="8.9669"/>
+		</camera>
+		<output name="output_tga">
+			<badge_position sval="top"/>
+			<image_path sval="./test10-output1.tga"/>
+		</output>
 	</film>
 	<film>
 		<parameters name="film_2">
@@ -420,5 +433,18 @@ To test, using the terminal (or Windows "cmd") do this:
 			<height ival="135"/> <!-- Height of rendered image -->
 			<width ival="240"/> <!-- Width of rendered image -->
 		</parameters>
+		<camera>
+			<focal fval="1.09375"/>
+			<from x="7.64791" y="-7.22615" z="8.1295"/>
+			<resx ival="240"/> <!-- Camera resolution X -->
+			<resy ival="135"/> <!-- Camera resolution Y -->
+			<to x="7.03447" y="-6.65603" z="7.58301"/>
+			<type sval="perspective"/>
+			<up x="8.25644" y="-6.8447" z="8.9669"/>
+		</camera>
+		<output name="output_tga">
+			<badge_position sval="top"/>
+			<image_path sval="./test10-output2.tga"/>
+		</output>
 	</film>
 </yafaray_container>

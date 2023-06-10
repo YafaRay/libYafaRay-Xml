@@ -423,7 +423,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<height ival="270"/>
 			<filter_type sval="gauss"/>
 		</parameters>
-		<camera name="Camera">
+		<camera>
 			<focal fval="1.09375"/>
 			<from x="8.64791" y="-7.22615" z="8.1295"/>
 			<resx ival="480"/>

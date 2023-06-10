@@ -41,7 +41,7 @@ void endElParamMap(XmlParser &parser, const char *element)
 	if(exit_state)
 	{
 		const std::string element_name = parser.stateElementName();
-		if(element_name.empty() && strcmp(element, "background") != 0 && strcmp(element, "volume_integrator") != 0 && strcmp(element, "layer") != 0 && strcmp(element, "accelerator") != 0)
+		if(element_name.empty() && strcmp(element, "background") != 0 && strcmp(element, "volume_integrator") != 0 && strcmp(element, "layer") != 0 && strcmp(element, "accelerator") != 0 && strcmp(element, "camera") != 0)
 		{
 			yafaray_printWarning(parser.getLogger(), ("XMLParser: No name for element '" + std::string(element) + "' available!").c_str());
 		}
@@ -58,7 +58,7 @@ void endElParamMap(XmlParser &parser, const char *element)
 			else if(!strcmp(element, "image"))
 				yafaray_createImage(parser.getScene(), element_name.c_str(), nullptr, parser.getParamMap());
 			else if(!strcmp(element, "texture")) yafaray_createTexture(parser.getScene(), element_name.c_str(), parser.getParamMap());
-			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), element_name.c_str(), parser.getParamMap());
+			else if(!strcmp(element, "camera")) yafaray_defineCamera(parser.getFilm(), parser.getParamMap());
 			else if(!strcmp(element, "accelerator")) yafaray_setSceneAcceleratorParams(parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "background")) yafaray_defineBackground(parser.getScene(), parser.getParamMap());
 			else if(!strcmp(element, "volume_region")) yafaray_createVolumeRegion(parser.getScene(), element_name.c_str(), parser.getParamMap());
