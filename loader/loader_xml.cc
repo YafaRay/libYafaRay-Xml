@@ -70,16 +70,33 @@ int main(int argc, char *argv[])
 
 	char *version_string = yafaray_xml_getVersionString();
 	parse.setAppName("YafaRay XML loader v" + std::string(version_string),
-					 "[OPTIONS]... <input xml file>\n<input xml file> : A valid yafaray XML file\n*Note: the output file name(s) and parameters are defined in the XML file, in the <output> tags.");
+					 std::string{"[OPTIONS]... <input xml file>\n"}
+					 + "<input xml file> : A valid yafaray XML file\n"
+					 + "*Note: the output file name(s) and parameters are defined in the XML file, in the <output> tags.");
 
 	parse.setOption("v", "version", true, "Displays this program's version.");
 	parse.setOption("h", "help", true, "Displays this help text.");
-	parse.setOption("vl", "verbosity-level", false, "Set console verbosity level, options are:\n                                       \"mute\" (Prints nothing)\n                                       \"error\" (Prints only errors)\n                                       \"warning\" (Prints also warnings)\n                                       \"params\" (Prints also render param messages)\n                                       \"info\" (Prints also basi info messages)\n                                       \"verbose\" (Prints additional info messages)\n                                       \"debug\" (Prints debug messages if any)\n");
+	parse.setOption("vl", "verbosity-level", false, std::string{"Set console verbosity level, options are:\n"}
+	+ "                                       \"mute\" (Prints nothing)\n"
+	+ "                                       \"error\" (Prints only errors)\n"
+	+ "                                       \"warning\" (Prints also warnings)\n"
+	+ "                                       \"params\" (Prints also render param messages)\n"
+	+ "                                       \"info\" (Prints also basi info messages)\n"
+	+ "                                       \"verbose\" (Prints additional info messages)\n"
+	+ "                                       \"debug\" (Prints debug messages if any)\n");
 	parse.setOption("lvl", "log-verbosity-level", false, "Set log/HTML files verbosity level, options are the same as for the \"verbosity-level\" parameter\n");
 	parse.setOption("nodt", "no-date-time", true, "If specified, disables the logging of the date/time in the screen and file logs");
 	parse.setOption("ccd", "console-colors-disabled", true, "If specified, disables the Console colors ANSI codes, useful for some 3rd party software that cannot handle ANSI codes well.");
-	parse.setOption("ics", "input-color-space", false, "Sets color space for input color values.\n                                       This does not affect textures, as they have individual color space parameters in the XML file.\n                                       Available options:\n                                       LinearRGB (default)\n                                       sRGB\n                                       XYZ (experimental)\n");
+	parse.setOption("ics", "input-color-space", false, std::string{"Sets color space for input color values.\n"}
+	+ "                                       This does not affect textures, as they have individual color space parameters in the XML file.\n"
+	+ "                                       Available options:\n"
+	+ "                                       \"LinearRGB\" (default)\n"
+	+ "                                       \"sRGB\"\n"
+	+ "                                       \"XYZ\" (experimental)\n");
 	parse.setOption("ig", "input-gamma", false, R"(Sets the input gamma for the input color space, 1.0 by default)");
+	parse.setOption("sn", "scene-name", false, R"(Scene name from XML file to be rendered. If not specified or does not exist in the XML, the first scene in the XML will be rendered)");
+	parse.setOption("in", "integrator-name", false, R"(Surface Integrator name from XML file to be rendered. If not specified or does not exist in the XML, the first surface integrator in the XML will be rendered)");
+	parse.setOption("fn", "film-name", false, R"(Film name from XML file to be rendered. If not specified or does not exist in the XML, the first film in the XML will be rendered)");
 
 	const bool parse_ok = parse.parseCommandLine();
 	if(!parse_ok)
@@ -141,9 +158,46 @@ int main(int argc, char *argv[])
 	yafaray_printInfo(yafaray_logger_global, ("Parsing file '" + xml_file_path + "' using standard ParseFile method").c_str());
 	yafaray_Container *container = yafaray_xml_ParseFile(yafaray_logger_global, xml_file_path.c_str(), input_color_space_string.c_str(), input_gamma);
 #endif
-	yafaray_Scene *yafaray_scene = yafaray_getSceneFromContainerByIndex(container, 0);
-	yafaray_SurfaceIntegrator *yafaray_surface_integrator = yafaray_getSurfaceIntegratorFromContainerByIndex(container, 0);
-	yafaray_Film *yafaray_film = yafaray_getFilmFromContainerByIndex(container, 0);
+
+	const std::string scene_name = parse.getOptionString("sn");
+	yafaray_Scene *yafaray_scene{nullptr};
+	if(scene_name.empty())
+	{
+		yafaray_scene = yafaray_getSceneFromContainerByIndex(container, 0);
+	}
+	else if(!yafaray_scene)
+	{
+		yafaray_printWarning(yafaray_logger_global, ("Scene name '" + scene_name + "' not found in XML file, using the first scene in the file").c_str());
+		yafaray_scene = yafaray_getSceneFromContainerByIndex(container, 0);
+	}
+	else yafaray_scene = yafaray_getSceneFromContainerByName(container, scene_name.c_str());
+
+	const std::string integrator_name = parse.getOptionString("in");
+	yafaray_SurfaceIntegrator *yafaray_surface_integrator{nullptr};
+	if(integrator_name.empty())
+	{
+		yafaray_surface_integrator = yafaray_getSurfaceIntegratorFromContainerByIndex(container, 0);
+	}
+	else if(!yafaray_surface_integrator)
+	{
+		yafaray_printWarning(yafaray_logger_global, ("Surface Integrator name '" + integrator_name + "' not found in XML file, using the first surface integrator in the file").c_str());
+		yafaray_surface_integrator = yafaray_getSurfaceIntegratorFromContainerByIndex(container, 0);
+	}
+	else yafaray_surface_integrator = yafaray_getSurfaceIntegratorFromContainerByName(container, integrator_name.c_str());
+
+	const std::string film_name = parse.getOptionString("fn");
+	yafaray_Film *yafaray_film{nullptr};
+	if(film_name.empty())
+	{
+		yafaray_film = yafaray_getFilmFromContainerByIndex(container, 0);
+	}
+	else if(!yafaray_film)
+	{
+		yafaray_printWarning(yafaray_logger_global, ("Film name '" + film_name + "' not found in XML file, using the first film in the file").c_str());
+		yafaray_film = yafaray_getFilmFromContainerByIndex(container, 0);
+	}
+	else yafaray_film = yafaray_getFilmFromContainerByName(container, film_name.c_str());
+
 	yafaray_setRenderControlForNormalStart(yafaray_render_control_global);
 	yafaray_SceneModifiedFlags yafaray_scene_modified_flags{YAFARAY_SCENE_MODIFIED_NOTHING};
 	yafaray_scene_modified_flags = yafaray_checkAndClearSceneModifiedFlags(yafaray_scene);

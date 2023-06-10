@@ -423,7 +423,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		</camera>
 		<output name="output_tga">
 			<badge_position sval="top"/>
-			<image_path sval="./test10-output1.tga"/>
+			<image_path sval="./test02-output1.tga"/>
 		</output>
 	</film>
 	<film>
@@ -444,7 +444,7 @@ To test, using the terminal (or Windows "cmd") do this:
 		</camera>
 		<output name="output_tga">
 			<badge_position sval="top"/>
-			<image_path sval="./test10-output2.tga"/>
+			<image_path sval="./test02-output2.tga"/>
 		</output>
 	</film>
 </yafaray_container>
