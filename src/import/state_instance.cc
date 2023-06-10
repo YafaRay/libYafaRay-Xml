@@ -54,29 +54,14 @@ void startElInstance(XmlParser &parser, const char *element, const char **attrs)
 	}
 	else if(!strcmp(element, "matrix"))
 	{
-		for(int n = 0; attrs[n]; n++)
-		{
-			if(!strcmp(attrs[n], "time")) parser.setTimeCurrent(static_cast<float>(atof(attrs[n + 1])));
-		}
-		parser.pushState(startElAddMatrix, endElAddMatrix, element, attrs);
-	}
-}
-
-void endElInstance(XmlParser &parser, const char *element)
-{
-	if(!strcmp(element, "instance"))
-	{
-		parser.popState();
-	}
-}
-
-void startElAddMatrix(XmlParser &parser, const char *element, const char **attrs)
-{
-	if(!strcmp(element, "matrix"))
-	{
+		float time{0.f};
 		double m[4 * 4];
 		for(int n = 0; attrs[n]; ++n)
 		{
+			if(attrs[n][0] == 't')
+			{
+				time = static_cast<float>(atof(attrs[n + 1]));
+			}
 			if(attrs[n][3] == '\0' && attrs[n][0] == 'm' && attrs[n][1] >= '0' && attrs[n][1] <= '3' && attrs[n][2] >= '0' && attrs[n][2] <= '3') //"mij" where i and j are between 0 and 3 (inclusive)
 			{
 				const int i = attrs[n][1] - '0';
@@ -84,13 +69,13 @@ void startElAddMatrix(XmlParser &parser, const char *element, const char **attrs
 				m[4 * i + j] = atof(attrs[n + 1]);
 			}
 		}
-		yafaray_addInstanceMatrixArray(parser.getScene(), parser.getInstanceIdCurrent(), m, parser.getTimeCurrent());
+		yafaray_addInstanceMatrixArray(parser.getScene(), parser.getInstanceIdCurrent(), m, time);
 	}
 }
 
-void endElAddMatrix(XmlParser &parser, const char *element)
+void endElInstance(XmlParser &parser, const char *element)
 {
-	if(!strcmp(element, "matrix"))
+	if(!strcmp(element, "instance"))
 	{
 		parser.popState();
 	}

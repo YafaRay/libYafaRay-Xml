@@ -388,13 +388,13 @@ To test, using the terminal (or Windows "cmd") do this:
 			<f a="0" b="1" c="3"/>
 			<f a="0" b="3" c="2"/>
 		</object>
-<!--		<instance>
+		<instance>
 			<object_ref name="Cube.005"/>
 			<object_ref name="Cube.004"/>
 			<matrix time="0" m00="1" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
 			<matrix time="0.5" m00="11" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
 			<matrix time="1" m00="21" m01="2" m02="3" m03="4" m10="1.5" m11="2.5" m12="3.5" m13="4.5" m20="1.7" m21="2.7" m22="3.7" m23="4.7" m30="1.95" m31="2.95" m32="3.95" m33="4.95"/>
-		</instance>-->
+		</instance>
 	</scene>
 	<surface_integrator>
 		<parameters name="surface integrator">

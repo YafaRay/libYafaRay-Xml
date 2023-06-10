@@ -123,8 +123,6 @@ void startElObjectParameters(XmlParser &parser, const char *element, const char 
 void endElObjectParameters(XmlParser &parser, const char *element);
 void startElInstance(XmlParser &parser, const char *element, const char **attrs);
 void endElInstance(XmlParser &parser, const char *element);
-void startElAddMatrix(XmlParser &parser, const char *element, const char **attrs);
-void endElAddMatrix(XmlParser &parser, const char *element);
 void startElParamMap(XmlParser &parser, const char *element, const char **attrs);
 void endElParamMap(XmlParser &parser, const char *element);
 void startElShaderNode(XmlParser &parser, const char *element, const char **attrs);
