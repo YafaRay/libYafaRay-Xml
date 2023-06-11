@@ -45,7 +45,7 @@ void parseParam(yafaray_ParamMap *yafaray_param_map, const char **attrs, const c
 		}
 		else if(!strcmp(attrs[0], "bval"))
 		{
-			const bool b = strcmp(attrs[1], "true") == 0;
+			const bool b = (strcmp(attrs[1], "true") == 0 || strcmp(attrs[1], "1") == 0);
 			yafaray_setParamMapBool(yafaray_param_map, param_name, static_cast<yafaray_Bool>(b));
 			return;
 		}
