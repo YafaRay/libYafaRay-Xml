@@ -129,8 +129,6 @@ void startElParamMap(XmlParser &parser, const char *element, const char **attrs)
 void endElParamMap(XmlParser &parser, const char *element);
 void startElShaderNode(XmlParser &parser, const char *element, const char **attrs);
 void endElShaderNode(XmlParser &parser, const char *element);
-void startElSmooth(XmlParser &parser, const char *element, const char **attrs);
-void endElSmooth(XmlParser &parser, const char *element);
 
 } //namespace yafaray_xml
 

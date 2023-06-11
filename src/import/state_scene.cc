@@ -43,21 +43,6 @@ void startElScene(XmlParser &parser, const char *element, const char **attrs)
 		parser.setInstanceIdCurrent(yafaray_createInstance(parser.getScene()));
 		parser.pushState(startElInstance, endElInstance, element, attrs);
 	}
-	else if(!strcmp(element, "smooth"))
-	{
-		double angle = 181.0;
-		std::string object_name;
-		for(int n = 0; attrs[n]; ++n)
-		{
-			if(!strcmp(attrs[n], "object_name")) object_name = attrs[n + 1];
-			else if(!strcmp(attrs[n],"angle")) angle = atof(attrs[n + 1]);
-		}
-		size_t object_id;
-		yafaray_getObjectId(parser.getScene(), &object_id, object_name.c_str());
-		bool success = yafaray_smoothObjectMesh(parser.getScene(), object_id, angle);
-		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with object_name='" + object_name + "', angle = " + std::to_string(angle)).c_str());
-		parser.pushState(startElSmooth, endElSmooth, element, attrs);
-	}
 	else yafaray_printWarning(parser.getLogger(), ("XMLParser: Skipping unrecognized element '" + std::string(element) + "'").c_str());
 }
 

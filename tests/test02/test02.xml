@@ -318,6 +318,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<f a="0" b="6" c="4"/>
 			<f a="5" b="7" c="3"/>
 			<f a="5" b="3" c="1"/>
+			<smooth angle="100"/>
 		</object>
 		<object>
 			<parameters name="Cube.001">
@@ -405,11 +406,9 @@ To test, using the terminal (or Windows "cmd") do this:
 	</scene>
 	<surface_integrator>
 		<parameters name="surface integrator">
-			<diffuse_photons ival="10000000"/> <!-- Number of diffuse photons -->
-			<fg_min_pathlen fval="0.1"/> <!-- Minimum distance to terminate path tracing (unless gatherBounces is reached). If not specified it defaults to the value set in 'diffuse_radius' -->
 			<raydepth ival="2"/> <!-- Ray depth -->
 			<shadowDepth ival="2"/> <!-- Shadow depth for transparent shadows -->
-			<type sval="photonmapping"/>
+			<type sval="directlighting"/>
 		</parameters>
 	</surface_integrator>
 	<film>

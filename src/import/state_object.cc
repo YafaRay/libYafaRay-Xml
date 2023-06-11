@@ -112,6 +112,16 @@ void startElObject(XmlParser &parser, const char *element, const char **attrs)
 		yafaray_getMaterialId(parser.getScene(), &material_id, attrs[1]);
 		parser.setMaterialIdCurrent(material_id);
 	}
+	else if(!strcmp(element, "smooth"))
+	{
+		double angle = 181.0;
+		for(int n = 0; attrs[n]; ++n)
+		{
+			if(!strcmp(attrs[n], "angle")) angle = atof(attrs[n + 1]);
+		}
+		bool success = yafaray_smoothObjectMesh(parser.getScene(), parser.getObjectIdCurrent(), angle);
+		if(!success) yafaray_printWarning(parser.getLogger(), ("XMLParser: Couldn't smooth object with angle = " + std::to_string(angle)).c_str());
+	}
 	else if(!strcmp(element, "parameters"))
 	{
 		parser.pushState(startElObjectParameters, endElObjectParameters, element, attrs);
@@ -202,15 +212,6 @@ static bool parseNormal(yafaray_Logger *yafaray_logger, const char **attrs, Vec3
 		}
 	}
 	return (number_of_components_read == 3 || number_of_components_read == 4);
-}
-
-void startElSmooth(XmlParser &parser, const char *element, const char **attrs)
-{
-}
-
-void endElSmooth(XmlParser &parser, const char *)
-{
-	parser.popState();
 }
 
 } //namespace yafaray_xml
