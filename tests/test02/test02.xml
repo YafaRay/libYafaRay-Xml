@@ -230,6 +230,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="-2.40468" y="1.44162" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="-2.40468" y="3.44162" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="-2.40468" y="3.44162" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.008"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -254,6 +255,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="5.26859" y="-0.393062" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="5.26859" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="5.26859" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.007"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -278,6 +280,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="3.54144" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="5.54144" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="5.54144" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.006"/>
 			<f a="2" b="0" c="1" d="3"/>
 			<f a="3" b="7" c="6" d="2"/>
 			<f a="7" b="5" c="4" d="6"/>
@@ -302,6 +305,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="-0.393062" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="1.60694" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="1.60694" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.005"/>
 			<f a="2" b="0" c="1"/>
 			<f a="2" b="1" c="3"/>
 			<f a="3" b="7" c="6"/>
@@ -332,6 +336,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="1.36442" y="-3.81854" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="1.36442" y="-1.81854" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="1.36442" y="-1.81854" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.004"/>
 			<f a="2" b="0" c="1"/>
 			<f a="2" b="1" c="3"/>
 			<f a="3" b="7" c="6"/>
@@ -361,6 +366,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="-3.01096" y="-1.94285" z="2.00001" ox="1" oy="-1" oz="1"/>
 			<p x="-3.01096" y="0.0571451" z="1.00136e-05" ox="1" oy="1" oz="-1"/>
 			<p x="-3.01096" y="0.0571451" z="2.00001" ox="1" oy="1" oz="1"/>
+			<material_ref sval="Material.003"/>
 			<f a="2" b="0" c="1"/>
 			<f a="2" b="1" c="3"/>
 			<f a="3" b="7" c="6"/>
@@ -385,6 +391,7 @@ To test, using the terminal (or Windows "cmd") do this:
 			<p x="10" y="-10" z="0"/>
 			<p x="-10" y="10" z="0"/>
 			<p x="10" y="10" z="0"/>
+			<material_ref sval="Material.002"/>
 			<f a="0" b="1" c="3"/>
 			<f a="0" b="3" c="2"/>
 		</object>
@@ -421,6 +428,12 @@ To test, using the terminal (or Windows "cmd") do this:
 			<type sval="perspective"/>
 			<up x="8.25644" y="-6.8447" z="8.9669"/>
 		</camera>
+		<layer>
+			<exported_image_name sval="Combined"/>
+			<exported_image_type sval="ColorAlpha"/>
+			<image_type sval="ColorAlpha"/>
+			<type sval="combined"/>
+		</layer>
 		<output name="output_tga">
 			<badge_position sval="top"/>
 			<image_path sval="./test02-output1.tga"/>
@@ -442,6 +455,12 @@ To test, using the terminal (or Windows "cmd") do this:
 			<type sval="perspective"/>
 			<up x="8.25644" y="-6.8447" z="8.9669"/>
 		</camera>
+		<layer>
+			<exported_image_name sval="Combined"/>
+			<exported_image_type sval="ColorAlpha"/>
+			<image_type sval="ColorAlpha"/>
+			<type sval="combined"/>
+		</layer>
 		<output name="output_tga">
 			<badge_position sval="top"/>
 			<image_path sval="./test02-output2.tga"/>
