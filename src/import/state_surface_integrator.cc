@@ -30,7 +30,7 @@ void startElSurfaceIntegrator(XmlParser &parser, const char *element, const char
 	{
 		parser.pushState(startElSurfaceIntegratorParameters, endElSurfaceIntegratorParameters, element, attrs);
 	}
-	else if(!strcmp(element, "surface_integrator") || !strcmp(element, "volume_integrator"))
+	else if(!strcmp(element, "volume_integrator"))
 	{
 		parser.pushState(startElParamMap, endElParamMap, element, attrs);
 	}
