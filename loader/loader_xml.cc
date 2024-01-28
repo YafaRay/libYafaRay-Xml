@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	yafaray_logger_global = yafaray_createLogger(nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
+	yafaray_logger_global = yafaray_createLogger("", nullptr, nullptr, YAFARAY_DISPLAY_CONSOLE_NORMAL);
 
 	yafaray_printInfo(yafaray_logger_global, ("YafaRay XML loader (LibYafaRay-Xml v" + std::string(version_string) + ")").c_str());
 
